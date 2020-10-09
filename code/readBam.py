@@ -1,7 +1,10 @@
-import pysam
-import os
+#import pysam
+import subprocess
 
-# /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/bam/c_elegans.bam
-os.system("")
+#src = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"
+src = "test.bam"
 
-#some shit here
+cmd = "samtools mpileup {0}".format(src)
+ps = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+output = ps.communicate()[0]
+print(output)
