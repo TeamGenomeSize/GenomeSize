@@ -9,6 +9,10 @@
 
 cd /home/z5207331/GenomeSize
 
+egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
+cut -f3,4,5 | \
+sed -e 's/\t/ /g' > /home/z5207331/GenomeSize/e_coli_ss.bed
+
 module load samtools
 
 source venv/bin/activate
