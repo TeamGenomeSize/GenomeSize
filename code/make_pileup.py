@@ -12,8 +12,8 @@ import pysam
 
 
 try:
-    bamfile = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"
-    # bamfile = "/srv/scratch/z5207331/e_coli.bam.bai"
+    # bamfile = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"
+    bamfile = "/srv/scratch/z5207331/e_coli.bam.bai"
     samfile = pysam.AlignmentFile(bamfile, "rb")
     
     f = open("/home/z5207331/GenomeSize/e_coli_ss.bed", "r")
