@@ -20,7 +20,7 @@ try:
     # outf = open("/home/z5207331/GenomeSize/pileup.out", "w")
     
     for pileupcolumn in samfile.pileup("chr1", 100, 120):
-    print("\ncoverage at base %s = %s" %
+        print("\ncoverage at base %s = %s" %
             (pileupcolumn.pos, pileupcolumn.n))
     
     samfile.close()
