@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "code/make_pileup.py", line 4, in <module>
+    import pysam
+ModuleNotFoundError: No module named 'pysam'
