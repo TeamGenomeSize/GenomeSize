@@ -15,7 +15,7 @@ try:
     bamfile = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"
     samfile = pysam.AlignmentFile(bamfile, "rb")
     
-    f = open("/home/z5207331/GenomeSize/e_coli.bed", "r")
+    f = open("/home/z5207331/GenomeSize/e_coli_ss.bed", "r")
     outf = open("/home/z5207331/GenomeSize/pileup.out", "w")
     
     counts = {}
