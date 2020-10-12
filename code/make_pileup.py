@@ -9,15 +9,16 @@ import pysam
 
 # filename = sys.argv[1]
 
-
+zid = "z5207315"
 
 try:
     # bamfile = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"
-    bamfile = "/srv/scratch/z5207331/e_coli.bam.bai"
-    samfile = pysam.AlignmentFile(bamfile, "rb")
+    bamfile = "/srv/scratch/{0}/e_coli.bam".format(zid)
     
-    f = open("/home/z5207331/GenomeSize/e_coli_ss.bed", "r")
-    outf = open("/home/z5207331/GenomeSize/pileup.out", "w")
+    samfile = pysam.AlignmentFile(bamfile, "rb")
+    samfile._hasIndex()
+    f = open("/home/{0}/GenomeSize/e_coli_ss.bed".format(zid), "r")
+    outf = open("/home/{0}/GenomeSize/pileup.out".format(zid), "w")
 
     counts = []
     
