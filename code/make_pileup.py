@@ -37,7 +37,17 @@ try:
     samfile.close()
     f.close()
     outf.close()
+    
+    # error
+    # [E::idx_find_and_load] Could not retrieve index file for '/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam'
+    # Traceback (most recent call last):
+    #   File "code/make_pileup.py", line 31, in <module>
+    #     for pileupcolumn in samfile.pileup(vals[0], int(vals[1]), int(vals[2])):
+    #   File "pysam/libcalignmentfile.pyx", line 1331, in pysam.libcalignmentfile.AlignmentFile.pileup
+    # ValueError: no index available for pileup
 
+    # copied from pysam documentation
+    
     # for pileupcolumn in samfile.pileup("chr1", 100, 120):
     # print("\ncoverage at base %s = %s" %
     #        (pileupcolumn.pos, pileupcolumn.n))
@@ -49,11 +59,6 @@ try:
     #                pileupread.alignment.query_sequence[pileupread.query_position]))
     # samfile.close()
     
-    
-
-
-    # f.close()
-
 
 
 except FileNotFoundError:
