@@ -9,11 +9,11 @@
 
 cd /home/z5207331/GenomeSize
 
-# python3 make_bed.py /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
+# # python3 make_bed.py /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
 
-egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
-cut -f1,4,5 > /home/z5207331/GenomeSize/e_coli.bed
+# egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
+# cut -f1,4,5 > /home/z5207331/GenomeSize/e_coli.bed
 
-module load samtools
+# module load samtools
 
-samtools mpileup -I /home/z5207331/GenomeSize/e_coli.bed -b /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam -o /home/z5207331/GenomeSize/e_coli.pileup
+# samtools mpileup -I /home/z5207331/GenomeSize/e_coli.bed -b /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam -o /home/z5207331/GenomeSize/e_coli.pileup
