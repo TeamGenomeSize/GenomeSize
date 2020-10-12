@@ -16,34 +16,28 @@ try:
     # bamfile = "/srv/scratch/z5207331/e_coli.bam.bai"
     samfile = pysam.AlignmentFile(bamfile, "rb")
     
-    # f = open("/home/z5207331/GenomeSize/e_coli_ss.bed", "r")
-    # outf = open("/home/z5207331/GenomeSize/pileup.out", "w")
+    f = open("/home/z5207331/GenomeSize/e_coli_ss.bed", "r")
+    outf = open("/home/z5207331/GenomeSize/pileup.out", "w")
+
+    counts = []
     
-    for pileupcolumn in samfile.pileup("chr1", 100, 120):
-        print("\ncoverage at base %s = %s" %
-            (pileupcolumn.pos, pileupcolumn.n))
-    
-    samfile.close()
-    
-    # counts = []
-    
-    # for line in f:
-    #     if line[0] == "#":
-    #         continue
+    for line in f:
+        if line[0] == "#":
+            continue
           
-    #     vals = line.split(" ")
+        vals = line.split(" ")
         
-    #     ncounts = []
+        ncounts = []
         
-    #     for pileupcolumn in samfile.pileup(vals[0], int(vals[1]), int(vals[2])):
-    #         ncounts.append(pileupcolumn.n)
+        for pileupcolumn in samfile.pileup(vals[0], int(vals[1]), int(vals[2])):
+            ncounts.append(pileupcolumn.n)
         
-    #     counts.append(ncounts)
-    #     outf.write(vals[0] + str(ncounts))
+        counts.append(ncounts)
+        outf.write(vals[0] + str(ncounts))
         
-    # samfile.close()
-    # f.close()
-    # outf.close()
+    samfile.close()
+    f.close()
+    outf.close()
     
     # error
     # [E::idx_find_and_load] Could not retrieve index file for '/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam'
