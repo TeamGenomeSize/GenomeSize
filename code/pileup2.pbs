@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #PBS -l select=1:ncpus=1:mem=4gb
-#PBS -l walltime=1:00:00
+#PBS -l walltime=12:00:00
 #PBS -M $USER@unsw.edu.au
 #PBS -m ae
 #PBS -j oe
-#PBS -o /srv/scratch/$USER/pileup2_log
+#PBS -o /home/$USER/GenomeSize/pileup2_log
 
 cd /home/z5207315/GenomeSize
 
