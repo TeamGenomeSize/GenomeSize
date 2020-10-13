@@ -7,7 +7,7 @@
 #PBS -j oe
 #PBS -o /home/z5207331/GenomeSize/make_pileup_log
 
-cd /home/z5207315/GenomeSize
+cd /home/z52073331/GenomeSize
 
 # egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
 # cut -f3,4,5 | \
@@ -23,6 +23,6 @@ module load samtools
 
 source venv/bin/activate
 
-python3 code/make_pileup.py
+python3 /home/z5207331/GenomeSize/code/make_pileup.py
 
 deactivate
