@@ -15,7 +15,7 @@ try:
     # bamfile = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"
     bamfile = "/srv/scratch/{0}/e_coli.bam".format(zid)
     
-    samfile = pysam.AlignmentFile(bamfile, "rb")
+    samfile = pysam.AlignmentFile(bamfile, "rb", index_filename="ecoli.bam.bai")
     samfile._hasIndex()
     f = open("/srv/scratch/{0}/e_coli_ss.bed".format(zid), "r")
     outf = open("/srv/scratch/{0}/pysam.pileup.out".format(zid), "w")
