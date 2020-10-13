@@ -7,7 +7,7 @@
 #PBS -j oe
 #PBS -o /home/$USER/GenomeSize/pileup2_log
 
-cd /home/z5207315/GenomeSize
+# cd /home/z5207315/GenomeSize
 
 # egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
 # cut -f3,4,5 | \
@@ -18,7 +18,10 @@ module load samtools
 # samtools sort /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam -o /srv/scratch/$USER/e_coli.bam
 # samtools index -b /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam > /srv/scratch/$USER/e_coli.bam.bai
 
-samtools sort /srv/scratch/$USER/e_coli.bam /srv/scratch/$USER/e_coli.sort
+cd /srv/scratch/z5207331
+
+
+samtools sort -o /srv/scratch/$USER/e_coli.sort.bam /srv/scratch/$USER/e_coli.bam
 samtools index -b /srv/scratch/$USER/e_coli.sort.bam
 cp /srv/scratch/$USER/e_coli.sort.bam.bai /srv/scratch/$USER/e_coli.bam.bai
 samtools mpileup -I /srv/scratch/$USER/e_coli_ss.bed /srv/scratch/$USER/e_coli.bam > /srv/scratch/$USER/pileup.out
