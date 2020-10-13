@@ -5,7 +5,7 @@
 #PBS -M $USER@unsw.edu.au
 #PBS -m ae
 #PBS -j oe
-#PBS -o /home/$USER/GenomeSize/make_pileup_log
+#PBS -o /srv/scratch/$USER/pileup2_log
 
 cd /home/z5207315/GenomeSize
 
@@ -20,6 +20,7 @@ module load samtools
 
 samtools sort /srv/scratch/$USER/e_coli.bam /srv/scratch/$USER/e_coli.sort
 samtools index -b /srv/scratch/$USER/e_coli.sort.bam
+cp /srv/scratch/$USER/e_coli.sort.bam.bai /srv/scratch/$USER/e_coli.bam.bai
 samtools mpileup -I /srv/scratch/$USER/e_coli_ss.bed /srv/scratch/$USER/e_coli.bam > /srv/scratch/$USER/pileup.out
 
 # source venv/bin/activate
