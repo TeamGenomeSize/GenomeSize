@@ -16,7 +16,7 @@ try:
     bamfile = "/srv/scratch/{0}/e_coli.bam".format(zid)
     
     samfile = pysam.AlignmentFile(bamfile, "rb", index_filename="/srv/scratch/{0}/e_coli.bam.bai".format(zid))
-    samfile._hasIndex()
+    # samfile._hasIndex()
     f = open("/srv/scratch/{0}/e_coli_ss.bed".format(zid), "r")
     outf = open("/srv/scratch/{0}/pysam.pileup.out".format(zid), "w")
 
