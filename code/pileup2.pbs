@@ -24,7 +24,7 @@ cd /srv/scratch/z5207331
 samtools sort -o /srv/scratch/$USER/e_coli.sort.bam /srv/scratch/$USER/e_coli.bam
 samtools index -b /srv/scratch/$USER/e_coli.sort.bam
 cp /srv/scratch/$USER/e_coli.sort.bam.bai /srv/scratch/$USER/e_coli.bam.bai
-samtools mpileup -I /srv/scratch/$USER/e_coli_ss.bed /srv/scratch/$USER/e_coli.bam > /srv/scratch/$USER/pileup.out
+samtools mpileup -l /srv/scratch/$USER/e_coli_ss.bed /srv/scratch/$USER/e_coli.bam > /srv/scratch/$USER/pileup.out
 
 # source venv/bin/activate
 
