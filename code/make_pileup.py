@@ -9,7 +9,7 @@ import pysam
 
 # filename = sys.argv[1]
 
-zid = "z5207315"
+zid = "z5207331"
 
 try:
     # bamfile = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"
@@ -17,8 +17,8 @@ try:
     
     samfile = pysam.AlignmentFile(bamfile, "rb")
     samfile._hasIndex()
-    f = open("/home/{0}/GenomeSize/e_coli_ss.bed".format(zid), "r")
-    outf = open("/home/{0}/GenomeSize/pileup.out".format(zid), "w")
+    f = open("/srv/scratch/{0}/e_coli_ss.bed".format(zid), "r")
+    outf = open("/srv/scratch/{0}/GenomeSize/pileup.out".format(zid), "w")
 
     counts = []
     

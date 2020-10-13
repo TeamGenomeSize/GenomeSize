@@ -15,9 +15,9 @@ cd /home/z5207315/GenomeSize
 
 module load samtools
 
-samtools sort /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam -o /srv/scratch/$USER/e_coli.bam
-samtools index -b /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam > /srv/scratch/$USER/e_coli.bam.bai
-samtools index -b /srv/scratch/$USER/e_coli.bam > /srv/scratch/$USER/e_coli.bam.bai
+# samtools sort /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam -o /srv/scratch/$USER/e_coli.bam
+# samtools index -b /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam > /srv/scratch/$USER/e_coli.bam.bai
+# samtools index -b /srv/scratch/$USER/e_coli.bam > /srv/scratch/$USER/e_coli.bam.bai
 
 source venv/bin/activate
 
