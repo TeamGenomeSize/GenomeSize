@@ -31,10 +31,9 @@ try:
         ncounts = []
         
         for pileupcolumn in samfile.pileup(vals[0], int(vals[1]), int(vals[2])):
-            ncounts.append(pileupcolumn.n)
+            outf.write("coverage at base {} : {}\n".format(pileupcolumn.reference_pos, pileupcolumn.nsegments))
         
-        counts.append(ncounts)
-        outf.write(vals[0] + str(ncounts))
+        # counts.append(ncounts)
         
     samfile.close()
     f.close()
