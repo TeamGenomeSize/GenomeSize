@@ -18,7 +18,7 @@ try:
     samfile = pysam.AlignmentFile(bamfile, "rb")
     samfile._hasIndex()
     f = open("/srv/scratch/{0}/e_coli_ss.bed".format(zid), "r")
-    outf = open("/srv/scratch/{0}/GenomeSize/pileup.out".format(zid), "w")
+    outf = open("/srv/scratch/{0}/pileup.out".format(zid), "w")
 
     counts = []
     
