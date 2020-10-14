@@ -34,7 +34,7 @@ try:
         
         outf.write(line + "\n")
         
-        for pileupcolumn in samfile.pileup(vals[0], int(vals[1]), int(vals[2])):
+        for pileupcolumn in samfile.pileup(reference=vals[0], start=int(vals[1]), end=int(vals[2]),stepper='nofilter',max_depth=500000,truncate=False,min_base_quality=0):
             outf.write("coverage at base {} : {}\n".format(pileupcolumn.reference_pos, pileupcolumn.nsegments))
             # for pileupread in pileupcolumn.pileups:
             #     if not pileupread.is_del and not pileupread.is_refskip:
