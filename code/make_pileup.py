@@ -32,14 +32,16 @@ try:
         
         ncounts = []
         
+        outf.write(line + "\n")
+        
         for pileupcolumn in samfile.pileup(vals[0], int(vals[1]), int(vals[2])):
             outf.write("coverage at base {} : {}\n".format(pileupcolumn.reference_pos, pileupcolumn.nsegments))
-            for pileupread in pileupcolumn.pileups:
-                if not pileupread.is_del and not pileupread.is_refskip:
-                    # query position is None if is_del or is_refskip is set.
-                    print ('\tbase in read %s = %s' %
-                          (pileupread.alignment.query_name,
-                           pileupread.alignment.query_sequence[pileupread.query_position]))
+            # for pileupread in pileupcolumn.pileups:
+            #     if not pileupread.is_del and not pileupread.is_refskip:
+            #         # query position is None if is_del or is_refskip is set.
+            #         outf.write('\tbase in read %s = %s' %
+            #               (pileupread.alignment.query_name,
+            #                pileupread.alignment.query_sequence[pileupread.query_position]))
                 
         # counts.append(ncounts)
         

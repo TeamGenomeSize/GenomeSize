@@ -27,6 +27,8 @@ cp /srv/scratch/$USER/e_coli.sort.bam.bai /srv/scratch/$USER/e_coli.bam.bai
 sort -n -k 2 e_coli_ss.bed > e_coli_sorted.bed
 samtools mpileup -l /srv/scratch/$USER/e_coli_sorted.bed /srv/scratch/$USER/e_coli.bam > /srv/scratch/$USER/pileup.out
 
+# cd /home/$USER/GenomeSize/
+
 # source venv/bin/activate
 
 # python3 code/make_pileup.py
