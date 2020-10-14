@@ -17,7 +17,7 @@ module load samtools
 # samtools sort /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam -o /srv/scratch/$USER/e_coli.bam
 # samtools index -b /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam > /srv/scratch/$USER/e_coli.bam.bai
 
-cd /srv/scratch/z5207331
+cd /srv/scratch/$USER
 
 
 samtools sort -o /srv/scratch/$USER/e_coli.sort.bam /srv/scratch/$USER/e_coli.bam
