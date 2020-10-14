@@ -13,9 +13,9 @@ zid = "z5207331"
 
 try:
     # bamfile = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"
-    bamfile = "/srv/scratch/{0}/e_coli.bam".format(zid)
+    bamfile = "/srv/scratch/{0}/e_coli.sort.bam".format(zid)
     
-    samfile = pysam.AlignmentFile(bamfile, "rb", index_filename="/srv/scratch/{0}/e_coli.bam.bai".format(zid))
+    samfile = pysam.AlignmentFile(bamfile, "rb", index_filename="/srv/scratch/{0}/e_coli.sort.bam.bai".format(zid))
     # samfile._hasIndex()
     
     # sort -n -k 2 e_coli_ss.bed > e_coli_sorted.bed
