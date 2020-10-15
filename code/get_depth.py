@@ -14,11 +14,13 @@ def main ():
 
     mmdepth = mode_of_modes(depths)
     maxdepth = max_mode(depths)
+    maxavgdepth = max_average(depths)
 
     f = open(out_file, "w")
 
     f.write("mode of modes depth is {}\n".format(mmdepth))
     f.write("modal depth is {}\n".format(maxdepth))
+    f.write("max average is is {}\n".format(maxavgdepth))
 
     f.close()
 
@@ -69,6 +71,13 @@ def max_mode(depths):
         maxes.append(max(d))
     
     return mode(maxes)
+    
+def max_average(depths):
+    maxes = []
+    for d in depths:
+        maxes.append(max(d))
+    
+    return sum(maxes)/len(maxes)
         
 if __name__ == "__main__":
     main()
