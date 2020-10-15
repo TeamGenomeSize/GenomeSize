@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import pandas as pd
+# import pandas as pd
 import sys
 # import pysam
 
