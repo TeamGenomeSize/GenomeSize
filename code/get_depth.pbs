@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#PBS -l select=1:ncpus=1:mem=4gb
+#PBS -l walltime=1:00:00
+#PBS -m ae
+#PBS -j oe
+#PBS -o /home/z5207331/GenomeSize/get_depth_log
+
+cd /home/z5207331/GenomeSize
+
+python3 /home/z5207331/GenomeSize/code/get_depth.py
