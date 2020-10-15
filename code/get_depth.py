@@ -4,7 +4,32 @@
 import sys
 # import pysam
 
+def main ():
+    zid = "z5207331" # CHANGE THIS TO YOUR zID WHEN RUNNING
 
+    pileup_file = "/srv/scratch/{0}/pileup.out".format(zid)
+    out_file = "/srv/scratch/{0}/depths.out".format(zid)
+
+    depths = read_pileup(pileup_file)
+
+    print(depths)
+
+    mmdepth = mode_of_modes(depths)
+    maxdepth = max_mode(depths)
+
+    print(mmdepth)
+    print(maxdepth)
+
+    # f = open(out_file, "w")
+
+    # f.write(mmdepth + "\n")
+    # f.write(maxdepth + "\n")
+
+    # f.close()
+
+# Input: pileup file
+# Output: A list a lists [sco] where sco = [read depth of bases]
+# Generates read depth from a pileup file
 def read_pileup(pileup_file):
     f = open(pileup_file, "r")
     depths = []
@@ -28,6 +53,7 @@ def read_pileup(pileup_file):
 
 
 # https://stackoverflow.com/questions/10797819/finding-the-mode-of-a-list/10797913
+# creates a list of unique somethings
 def mode(array):
     most = max(list(map(array.count, array)))
     return list(set(filter(lambda x: array.count(x) == most, array)))
@@ -47,26 +73,5 @@ def max_mode(depths):
     
     return mode(maxes)
         
-
-
-zid = "z5207331"
-
-pileup_file = "/srv/scratch/{0}/pileup.out".format(zid)
-out_file = "/srv/scratch/{0}/depths.out".format(zid)
-
-depths = read_pileup(pileup_file)
-
-print(depths)
-
-mmdepth = mode_of_modes(depths)
-maxdepth = max_mode(depths)
-
-print(mmdepth)
-print(maxdepth)
-
-# f = open(out_file, "w")
-
-# f.write(mmdepth + "\n")
-# f.write(maxdepth + "\n")
-
-# f.close()
+if __name__ == "__main__":
+    main()
