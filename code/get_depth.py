@@ -20,7 +20,9 @@ def read_pileup(pileup_file):
             depths.append(curr_gene)
             curr_gene = []
         
-        curr_gene.append(int(vals[3]))         
+        curr_gene.append(int(vals[3]))     
+    
+    f.close()
     
     return depths
 
@@ -57,5 +59,9 @@ depths = read_pileup(pileup_file)
 mmdepth = mode_of_modes(depths)
 maxdepth = max_mode(depths)
 
-out_file.write(mmdepth + "\n")
-out_file.write(maxdepth + "\n")
+f = open(out_file, "w")
+
+f.write(mmdepth + "\n")
+f.write(maxdepth + "\n")
+
+f.close()
