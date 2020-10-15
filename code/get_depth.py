@@ -56,12 +56,17 @@ out_file = "/srv/scratch/{0}/depths.out".format(zid)
 
 depths = read_pileup(pileup_file)
 
+print(depths)
+
 mmdepth = mode_of_modes(depths)
 maxdepth = max_mode(depths)
 
-f = open(out_file, "w")
+print(mmdepth)
+print(maxdepth)
 
-f.write(mmdepth + "\n")
-f.write(maxdepth + "\n")
+# f = open(out_file, "w")
 
-f.close()
+# f.write(mmdepth + "\n")
+# f.write(maxdepth + "\n")
+
+# f.close()
