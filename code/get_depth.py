@@ -44,8 +44,10 @@ def read_pileup(pileup_file):
         if int(vals[1]) != index + 1 and index != 0:
             depths.append(curr_gene)
             curr_gene = []
+                
+        curr_gene.append(int(vals[3]))    
         
-        curr_gene.append(int(vals[3]))     
+        index = int(vals[1])
     
     f.close()
     
