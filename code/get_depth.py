@@ -19,9 +19,9 @@ def usageExample():
 
     f = open(out_file, "w")
 
-    f.write("mode of modes depth is {}\n".format(mmdepth))
-    f.write("modal depth is {}\n".format(maxdepth))
-    f.write("max median depth is {}\n".format(maxmeddepth))
+    f.write("mode of modes depth is {}\n".format(mmDepth))
+    f.write("modal depth is {}\n".format(maxDepth))
+    f.write("max median depth is {}\n".format(maxMedDepth))
 
     f.close()
 
