@@ -2,10 +2,10 @@
 
 #PBS -l select=1:ncpus=1:mem=4gb
 #PBS -l walltime=1:00:00
-#PBS -M sehhajdkg@gmail.com
+#PBS -M z5206657@ad.unsw.edu.au
 #PBS -m ae
 #PBS -j oe
-#PBS -o /home/z5206657/GenomeSize/log
+#PBS -o /home/z5206657/GenomeSize/readVolLog
 
 echo " -- changed directory -- "
 
@@ -17,31 +17,14 @@ module load samtools/1.10
 
 echo " -- run calcReadVolume.sh --"
 
-#chmod u+x calcReadVolume.sh
+chmod u+x calcReadVolume.sh
+
+# run with 10kb, 5kb, none - min read cutoff
 
 ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"  10000
 
 ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"  5000
 
 ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"  
-
-
-#echo "convert bam to sam "
-#samtools view /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam | head -n 10000 | cut -f 10  > results
-#samtools view -h /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam | head -n 10  > results
-
-#echo "10 column"
-
-#samtools view /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam | awk '{print length($10)}' > 10col
-
-
-#echo "stats bam file"
-#samtools stats /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam | grep ^RL | cut -f 2- | awk '{sum+=$2} END{print "sum=",sum}' > stats
-#samtools stats /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam | grep ^RL | cut -f 2- | awk '{print $0} {sum+=$2} {total+=$1*$2} END{print "sum=",sum} END{print "total=",total}' > stats
-
-
-# echo " -- sum from view --"
-
-# samtools view /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam | awk '{sum+=$10} END{print "sum=",sum} ' > totalRV
 
 
