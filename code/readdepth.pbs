@@ -1,0 +1,33 @@
+
+#!/bin/bash
+
+#PBS -l select=1:ncpus=1:mem=4gb
+#PBS -l walltime=1:00:00
+#PBS -m ae
+#PBS -j oe
+#PBS -o /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/log
+
+
+cd /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output
+
+time=$(date "+%Y.%m.%d-%H.%M.%S")
+
+dirname=GenomeSize.$time
+
+mkdir $dirname
+
+# get bed file
+egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
+cut -f3,4,5 | \
+sed -e 's/\t/ /g' > $dirname/e_coli.bed
+sort -n -k 2 $dirname/e_coli.bed > $dirname/e_coli_sorted.bed
+
+module load samtools
+
+samtools sort -o $dirname/e_coli.sort.bam $dirname/e_coli.bam
+samtools index -b $dirname/e_coli.sort.bam
+cp $dirname/e_coli.sort.bam.bai $dirname/e_coli.bam.bai
+samtools mpileup -l $dirname/e_coli_sorted.bed $dirname/e_coli.bam > $dirname/pileup.out
+
+
+python3 /home/$USER/GenomeSize/code/get_depth.py $dirname
