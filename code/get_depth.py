@@ -21,7 +21,7 @@ def main ():
 
     f.write("mode of modes depth is {}\n".format(mmdepth))
     f.write("modal depth is {}\n".format(maxdepth))
-    f.write("max average is is {}\n".format(maxavgdepth))
+    f.write("max median is is {}\n".format(maxmeddepth))
 
     f.close()
 
