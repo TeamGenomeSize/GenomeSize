@@ -12,20 +12,15 @@ def main ():
 
     depths = read_pileup(pileup_file)
 
-    print(depths)
-
     mmdepth = mode_of_modes(depths)
     maxdepth = max_mode(depths)
 
-    print(mmdepth)
-    print(maxdepth)
+    f = open(out_file, "w")
 
-    # f = open(out_file, "w")
+    f.write("mode of modes depth is {}\n".format(mmdepth))
+    f.write("modal depth is {}\n".format(maxdepth))
 
-    # f.write(mmdepth + "\n")
-    # f.write(maxdepth + "\n")
-
-    # f.close()
+    f.close()
 
 # Input: pileup file
 # Output: A list a lists [sco] where sco = [read depth of bases]
