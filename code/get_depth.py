@@ -2,6 +2,7 @@
 
 # import pandas as pd
 import sys
+import math
 # import pysam
 
 def main ():
@@ -14,7 +15,7 @@ def main ():
 
     mmdepth = mode_of_modes(depths)
     maxdepth = max_mode(depths)
-    maxavgdepth = max_average(depths)
+    maxmeddepth = max_median(depths)
 
     f = open(out_file, "w")
 
@@ -72,12 +73,12 @@ def max_mode(depths):
     
     return mode(maxes)
     
-def max_average(depths):
+def max_median(depths):
     maxes = []
     for d in depths:
         maxes.append(max(d))
     
-    return sum(maxes)/len(maxes)
+    return maxes[math.floor(len(maxes)/2)]
         
 if __name__ == "__main__":
     main()
