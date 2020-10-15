@@ -5,31 +5,31 @@ import sys
 import math
 # import pysam
 
-def main ():
-    zid = "z5207331" # CHANGE THIS TO YOUR zID WHEN RUNNING
+def usageExample():
+    outdir = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/{}".format(sys.argv[1])
 
-    pileup_file = "/srv/scratch/{0}/pileup.out".format(zid)
-    out_file = "/srv/scratch/{0}/depths.out".format(zid)
+    pileup_file = "{}/pileup.out".format(outdir)
+    out_file = "{}/depths.out".format(outdir)
 
-    depths = read_pileup(pileup_file)
+    depths = readPileup(pileup_file)
 
-    mmdepth = mode_of_modes(depths)
-    maxdepth = max_mode(depths)
-    maxmeddepth = max_median(depths)
+    mmDepth = modeOfModes(depths)     # list
+    maxDepth = maxMode(depths)         # list
+    maxMedDepth = maxMedian(depths)    # int
 
     f = open(out_file, "w")
 
     f.write("mode of modes depth is {}\n".format(mmdepth))
     f.write("modal depth is {}\n".format(maxdepth))
-    f.write("max median is is {}\n".format(maxmeddepth))
+    f.write("max median depth is {}\n".format(maxmeddepth))
 
     f.close()
 
 # Input: pileup file
 # Output: A list a lists [sco] where sco = [read depth of bases]
 # Generates read depth from a pileup file
-def read_pileup(pileup_file):
-    f = open(pileup_file, "r")
+def readPileup(pileupFile):
+    f = open(pileupFile, "r")
     depths = []
     
     curr_gene = []
@@ -59,21 +59,21 @@ def mode(array):
     return list(set(filter(lambda x: array.count(x) == most, array)))
 
 
-def mode_of_modes(depths):
+def modeOfModes(depths):
     modes = []
     for d in depths:
         modes += mode(d)
     return mode(modes)
 
 
-def max_mode(depths):
+def maxMode(depths):
     maxes = []
     for d in depths:
         maxes.append(max(d))
     
     return mode(maxes)
     
-def max_median(depths):
+def maxMedian(depths):
     maxes = []
     for d in depths:
         maxes.append(max(d))
@@ -81,4 +81,4 @@ def max_median(depths):
     return maxes[math.floor(len(maxes)/2)]
         
 if __name__ == "__main__":
-    main()
+    usageExample()
