@@ -50,11 +50,12 @@ def max_mode(depths):
 zid = "z5207331"
 
 pileup_file = "/srv/scratch/{0}/pileup.out".format(zid)
+out_file = "/srv/scratch/{0}/depths.out".format(zid)
 
 depths = read_pileup(pileup_file)
 
 mmdepth = mode_of_modes(depths)
 maxdepth = max_mode(depths)
 
-print(mmdepth)
-print(maxdepth)
+out_file.write(mmdepth + "\n")
+out_file.write(maxdepth + "\n")
