@@ -1,0 +1,34 @@
+
+#!/bin/bash
+
+#PBS -l select=1:ncpus=1:mem=4gb
+#PBS -l walltime=1:00:00
+#PBS -m ae
+#PBS -j oe
+#PBS -o /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/log
+
+
+cd /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output
+
+time=$(date "+%Y.%m.%d-%H.%M.%S")
+
+dirname=GenomeSize.$time
+
+mkdir $dirname
+
+# get bed file
+egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv | \
+cut -f3,4,5 | \
+sed -e 's/\t/ /g' > $dirname/s_cerevisiae.bed
+sort -n -k 2 $dirname/s_cerevisiae.bed > $dirname/s_cerevisiae_sorted.bed
+
+module load samtools
+
+cp /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam $dirname/
+samtools sort -o $dirname/s_cerevisiae.sort.bam $dirname/s_cerevisiae.bam
+samtools index -b $dirname/s_cerevisiae.sort.bam
+cp $dirname/s_cerevisiae.sort.bam.bai $dirname/s_cerevisiae.bam.bai
+samtools mpileup -l $dirname/s_cerevisiae_sorted.bed $dirname/s_cerevisiae.bam > $dirname/pileup.out
+
+
+python3 /home/$USER/GenomeSize/code/get_depth.py $dirname
