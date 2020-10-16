@@ -19,7 +19,8 @@ mkdir $dirname
 # get bed file
 egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv | \
 cut -f3,4,5 | \
-sed -e 's/\t/ /g' > $dirname/s_cerevisiae.bed
+sed -e 's/\t/ /g' | \
+egrep -v '^$' > $dirname/s_cerevisiae.bed
 sort -n -k 2 $dirname/s_cerevisiae.bed > $dirname/s_cerevisiae.sorted.bed
 
 module load samtools
