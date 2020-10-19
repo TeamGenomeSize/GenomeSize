@@ -1,0 +1,70 @@
+#!/bin/bash
+
+#PBS -N run_genomeSize.py
+#PBS -l select=2:ncpus=1:mem=4gb
+#PBS -l walltime=01:00:00
+#PBS -M z5215600@unsw.edu.au
+#PBS -m ae
+#PBS -j oe
+#PBS -o /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test
+
+set -e						# if any error occurs, exit 1
+
+##############
+## UNTESTED ##
+##############
+
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test
+# FILTER_LEN=5000
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
+# WD=$(pwd)
+
+#########
+# test runs
+# qsub -v bam=${BAM},wd=${WD},filter_len=${FILTER_LEN},od=${OD},sco=${SCO} run.pbs
+
+cd $wd
+
+##################
+## LOAD MODULES ##
+##################
+module load samtools/1.10
+threads=2
+time=$(date "+%Y.%m.%d-%H.%M.%S")
+
+
+#################
+## READ VOLUME ##
+#################
+
+# calculate samtools stats to get one volume value
+if [[ -z "${filter_len}" ]]
+then
+    samtools stats -@ ${threads} ${bam} | grep ^RL | cut -f 2- | awk '{total+=$1*$2} END{print total}' > ${od}/read_volume.txt
+else
+    samtools stats -@ ${threads} ${bam} | grep ^RL | cut -f 2- | awk -v min="${filter_len}" '{if($1 >= min) total+=$1*$2 } END{print total}' > ${od}/read_volume.txt
+fi
+
+
+##################
+## READ PILEUPS ##
+##################
+
+# get bed file
+egrep -v "^#" ${sco} | cut -f3,4,5 | sed -e 's/\t/ /g' > ${od}/e_coli.bed
+egrep -v '^$' > ${od}/e_coli.bed
+# create sorted bam file
+sort -n -k 2 ${od}/e_coli.bed > ${od}/e_coli_sorted.bed
+
+cp ${bam} ${od}/
+samtools sort -@ ${threads} -o ${od}/e_coli.sort.bam ${od}/e_coli.bam
+samtools index -@ ${threads} -b ${od}/e_coli.sort.bam
+cp ${od}/e_coli.sort.bam.bai ${od}/e_coli.bam.bai
+
+pileup=${od}/pileup.out
+samtools mpileup -l ${od}/e_coli_sorted.bed ${od}/e_coli.bam > ${pileup}
+
+
+# taking outputs and giving an answer
+# python3 genomeSize.py -@ ${threads} -wd ${wd} -b ${bam} -sco ${sco} -p ${pileup} ${assumptions}
