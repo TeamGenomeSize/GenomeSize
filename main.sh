@@ -6,14 +6,20 @@
 	# you may exit the shell when following is printed to the terminal:
 	# "Completed error checking inputs, pipeline will complete in background"
 # run with:
-# mkdir -p ${output_dir} 
-# ./main.sh -od ${output_dir} -b ${bam} -sco ${sco} &
+# mkdir -p ${OD} 
+# ./main.sh -od ${od} -nm ${NAME} -wd ${WD} -b ${bam} -sco ${sco} &
 # disown -h %1
 
-# output_dir =
-# bam =
-# sco =
-# summary_path =
+# NAME=e_coli
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test
+# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/bam/${NAME}.bam
+# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/busco3/run_${NAME}/full_table_${NAME}.tsv
+# WD=$(pwd)
+
+# setting default flags
+CALC_SCO=false
+FILTER_LEN=5000
+
 
 ############
 # UNTESTED #
@@ -29,14 +35,15 @@ set -e						# if any error occurs, exit 1
 ###############
 
 # Mandatory:
-# - ${bam}, path to bam file of mapped reads
-# - ${od}, path of the working/output directory of script
-# - ${sco}, path to tsv of BUSCO single copy ortholog output
+# - ${OD}, path of the working/output directory of script
+# - ${NAME}, rootname for files created by pipeline
+# - #{wd}, path to top level of code i.e. same level as this main.sh script
 
 # Optional:
-# - ${rf}, path to reference genome
-# - ${fl}, filter_len: reads below this threshold not included in read volume calculation
-# - ${dm}, mode to calculuate read depth
+# - ${REF_GENOME}, path to reference genome
+# - ${SCO}, path to tsv of BUSCO single copy ortholog output
+# - ${BAM}, path to bam file of mapped reads
+
 
 ##                                                                              ##
 # getopts handling adapted from:                                                 #
@@ -44,8 +51,9 @@ set -e						# if any error occurs, exit 1
 ##                                                                              ##
 
 function print_usage {
-  echo "TODO"
+  echo "banana"
 }
+
 
 
 if [[ "$1" =~ ^((-{1,2})([Hh]$|[Hh][Ee][Ll][Pp])|)$ ]]; then
@@ -64,39 +72,38 @@ else
       "-sco"|"--single_copy_orthologs"  ) SCO="$1"; shift;;
       "-rf"|"--reference_genome"        ) REF_GENOME="$1"; shift;;
       "-fl"|"--filter_len"              ) FILTER_LEN="$1"; shift;;
-      "-dm"|"--depth_method"            ) METHOD="$1"; shift;;
+      "-nm"|"--name"                    ) NAME="$1"; shift;;
+      "-wd"|"--working_dir"             ) WD="$1"; shift;;
       *                                 ) echo "ERROR: Invalid option: \""$opt"\"" >&2
       exit 1;;
     esac
   done
 fi
 
-# setting default flags
-METHOD=mode_of_modes            # mode of modes, maximum of modes, median
-CALC_SCO=false
-WD=$(pwd)
 
 # ERROR HANDLING OF MISSING MANDATORY ARGUMENTS
 # TODO
-if [[ "$OD" == "" ]]; then
-  echo "ERROR: Option -od require arguments." >&2
+if [[ "$OD" == "" || "$NAME" == "" || "$WD" == "" ]]; then
+  echo "ERROR: Option -od, -nm, -wd require arguments." >&2
   exit 1
 fi
 
-if [[ "$BAM" == "" ]]; then
-  echo "TODO" >&2
 
-  if [[ "$SCO" == "" ]]; then
-    echo "TODO" >&2
+# TODO
+# if [[ "$BAM" == "" ]]; then
+#   echo "TODO" >&2
 
-    if [[ "$REF_GENOME" == "" ]]; then
-      echo "Either provide a reference genome or provide a bam and corresponding sco file" >&2
-    fi
+#   if [[ "$SCO" == "" ]]; then
+#     echo "TODO" >&2
 
-  fi
+#     if [[ "$REF_GENOME" == "" ]]; then
+#       echo "Either provide a reference genome or provide a bam and corresponding sco file" >&2
+#     fi
 
-  exit 1
-fi
+#   fi
+
+#   exit 1
+# fi
 
 
 echo "Error handling of arguments complete, you may now close the terminal"
@@ -104,34 +111,41 @@ echo "---"
 echo "Make sure to check pipeline_log.txt before using results in \
 case the script terminated unexpectedly."
 
-log=${output_dir}/pipeline_log.txt
-exec 3>&1 1>>${log} 2>&1 	# handles printing of messages to log and terminal
+LOG=${OD}/pipeline_log.txt
+exec 3>&1 1>>${LOG} 2>&1 	# handles printing of messages to log and terminal
 
-echo "===========================================================" >> ${log}
-echo [$(date)] "PID: $$" >> ${log}
-echo "===========================================================" >> ${log}
+echo "===========================================================" >> ${LOG}
+echo [$(date)] "PID: $$" >> ${LOG}
+echo "===========================================================" >> ${LOG}
 
 # Print current envrionment variables
-# TODO
+echo "BAM =${BAM}"
+echo "OUTPUT_DIRECTORY = ${OD}"
+echo "SCO = ${SCO}"
+echo "NAME = ${NAME}"
+echo "REF_GENOME = ${REF_GENOME}"
 
+echo "===========================================================" >> ${LOG}
 
-# Running BUSCO or MMSeq2 would happen up here (Epic Story 4)
-# TODO
+# # Running BUSCO or MMSeq2 would happen up here (Epic Story 4)
+# # TODO
 
 
 # Compute array of assumptions to try
-# TODO
+python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
 
+# test
+echo method=maxMedDepth,indel=false,r_clipping=false > ${WD}/assumptions.txt
+
+echo "===========================================================" >> ${LOG}
 
 # Run the different combinations of variable (python generated)
-# for each assumptions in python output 
+for assumptions in ${WD}/assumptions.txt; do
 
   # run run.pbs, launching parralel jobs
-  qsub run.pbs \
-  -v OD=${OD} BAM=${BAM} SCO=${SCO} assumptions=${assumptions}
+  qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${ASSUMPTIONS} run.pbs
 
-
-
+done
 
 
 ## DELETE AND TIDY FILES
@@ -139,34 +153,8 @@ echo "===========================================================" >> ${log}
 
 
 ## PRINTS DURATION OF SCRIPT
-duration=${SECONDS}
-echo "$((${duration} / 3600)) hours, $(((${duration} / 60) % 60)) minutes and $((${duration} % 60)) seconds elapsed" >> ${log}
-echo [$(date)] "COMPLETED PIPELINE for: " >> ${log}
-echo "${experiment_name}" >> ${log}
-echo "===========================================================" >> ${log}
+echo "$((${SECONDS} / 3600)) hours, $(((${SECONDS} / 60) % 60)) minutes and $((${SECONDS} % 60)) seconds elapsed" >> ${LOG}
+echo [$(date)] "COMPLETED PIPELINE for: ${NAME}" >> ${LOG}
+echo "===========================================================" >> ${LOG}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## PROGRAM PATHS -- PLEASE CHANGE THESE PATHS TO THE ACTUAL PROGRAM PATHS ON YOUR SYSTEM
-
-## ERROR HANDLING INPUTS
 

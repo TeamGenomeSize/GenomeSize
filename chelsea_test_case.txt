@@ -1,0 +1,11 @@
+# positive
+    # just try every variable SUCCESS
+
+# input paths
+    # have bam, have sco, have ref FAIL
+    # have bam, have sco, no ref SUCCESS
+    # have bam, no sco, have ref FAIL
+    # have bam, no sco, no ref FAIL
+    # no bam, no sco, have ref SUCCESS
+    # no bam, no sco, no ref FAIL
+

@@ -7,8 +7,11 @@
 
 
 import argparse
-import code.getDepth import readPileup
-from code.calcGenomeSize import *
+from code.getDepth import readPileup, getDepth
+
+############
+# run with:
+# python3 genomeSize.py -od ${od} -n ${name} -p ${pileup} -v ${volume} -m ${method}
 
 
 #############
@@ -17,11 +20,22 @@ from code.calcGenomeSize import *
 
 
 parser = argparse.ArgumentParser(description='Calculate genome size given a set of combinations.')
-parser.add_argument('integers', metavar='N', type=int, nargs='+',
-                    help='an integer for the accumulator')
-parser.add_argument('--method', metavar='method' dest='accumulate', action='store_const',
-                    const=sum, default=max,
-                    help='sum the integers (default: find the max)')
+# v
+parser.add_argument('-v', action='store', type=str, required=True, dest='volume_path')
+# od
+parser.add_argument('-od', action='store', type=str, required=True, dest='od')
+# n
+parser.add_argument('-n', action='store', type=str, required=True, dest='name')
+# p
+parser.add_argument('-p', action='store', type=str, required=True, dest='pileup_path')
+# m
+parser.add_argument('-m', action='store', type=str, required=True, dest='method')
+# i
+parser.add_argument('-i', action='store', type=bool, required=True, dest='indel')
+# rd
+parser.add_argument('-rc', action='store', type=bool, required=True, dest='rc')
+
+
 
 args = parser.parse_args()
 print(args.accumulate(args.integers))
@@ -29,17 +43,31 @@ print(args.accumulate(args.integers))
 
 def main ():
 
-    # 1) get read volume
-    volume = readVolume()
+    test_flags()
 
-    # 2) get read depth
-    depths = readPileup()
-    depth = maxMedian(method, depths)    # int
+    # # 1) get read volume
+    # volume = readVolume(args.volume_path)
 
-    # 3) calculate genome size
-    genome_size = calcGenomeSize()
+    # # 2) get read depth
+    # depths = readPileup(args.pileup_path)
+    # depth = getDepth(args.method, depths) 
 
-    # 4) print out into a parseable log file
+    # # 3) calculate genome size (takes the floor function)
+    # genome_size = volume / depth
+
+    # 4) print out into a parseable log file with list of assumptions (ALANA)
+
+    # e.g. print('method =', args.method)
+    
+    #             method, filter, indel bias, 
+    # volume              50000
+    # depth
+    # genome_size=1million
+    # --------------------------
+    #             method, filter, indel bias, 
+    # volume      
+    # depth
+    # genome_size
 
     
 
@@ -54,6 +82,17 @@ def readVolume(readVolumeFile: str):
     
     return read_volume
 
+
+
+def test_flags():
+    print(args.volume_path)
+    print(args.od)
+    print(args.name)
+    print(args.pileup_path)
+    print(args.method)
+    print(args.indel)
+    print(args.rc)
+    print('------------')
 
 
 if __name__ == "__main__":
