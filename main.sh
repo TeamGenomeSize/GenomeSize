@@ -81,6 +81,7 @@ else
 fi
 
 
+
 # ERROR HANDLING OF MISSING MANDATORY ARGUMENTS
 # TODO
 if [[ "$OD" == "" || "$NAME" == "" || "$WD" == "" ]]; then
@@ -89,29 +90,71 @@ if [[ "$OD" == "" || "$NAME" == "" || "$WD" == "" ]]; then
 fi
 
 
-# TODO
-# if [[ "$BAM" == "" ]]; then
-#   echo "TODO" >&2
+# have bam, have sco, have ref FAIL, wait for input of which one to do
+if [[ "$BAM" != ""  && "$SCO" != "" && "$REF_GENOME" != "" ]]; then
+  echo "Press 1: Run from BAM and SCO (fast)"
+  echo "Press 2: Run from reference genome (slow)"
+  read -n 1 -p "Input Selection:" input
+  if [[ $input == "2" ]]; then
+    $CALC_SCO=true
+  elif [[ $input == "1" ]]; then
+    $CALC_SCO=false
+  else
+    echo "ERROR: You have entered an invalid selection, please rerun correctly"
+    exit 1
+  fi
+fi
 
-#   if [[ "$SCO" == "" ]]; then
-#     echo "TODO" >&2
+# have bam, no sco, have ref FAIL, wait for input to do busco/mmseq or include sco
+if [[ "$BAM" != ""  && "$SCO" == "" && "$REF_GENOME" != "" ]]; then
+  echo "Press 1: Program will exit and please run again providing BAM"
+  echo "Press 2: Run from reference genome (slow)"
+  read -n 1 -p "Input Selection:" input
+  if [[ $input == "1" ]]; then
+    exit 1
+  elif [[ $input == "2" ]]; then
+    $CALC_SCO=true
+  else
+    echo "ERROR: You have entered an invalid selection, please rerun correctly"
+    exit 1
+  fi
+fi
 
-#     if [[ "$REF_GENOME" == "" ]]; then
-#       echo "Either provide a reference genome or provide a bam and corresponding sco file" >&2
-#     fi
+# have bam, no sco, no ref FAIL, missing sco
+if [[ "$BAM" != ""  && "$SCO" == "" && "$REF_GENOME" == "" ]]; then
+  echo "ERROR: Missing single copy ortholog .tsv (-sco)"
+  exit 1
+fi
 
-#   fi
+# no bam, have sco, no ref FAIL, missing BAM
+if [[ "$BAM" == ""  && "$SCO" != "" && "$REF_GENOME" == "" ]]; then
+  echo "ERROR: Missing .bam (-bam)"
+  exit 1
+fi
 
-#   exit 1
-# fi
+# no bam, no sco, no ref FAIL, missing stuff
+if [[ "$BAM" == ""  && "$SCO" == "" && "$REF_GENOME" == "" ]]; then
+  echo "Either provide a reference genome (slow) OR provide a bam and corresponding sco file (fast)"
+  exit 1
+fi
+
+if [[ "$BAM" != ""  && "$SCO" != "" && "$REF_GENOME" == "" ]]; then
+  continue
+elif [[ "$BAM" == ""  && "$SCO" == "" && "$REF_GENOME" != "" ]]; then
+  continue
+else
+  echo "Either provide a reference genome (slow) OR provide a bam and corresponding sco file (fast)"
+  exit 1
+fi
 
 
+LOG=${OD}/pipeline_log.txt
 echo "Error handling of arguments complete, you may now close the terminal"
 echo "---"
 echo "Make sure to check pipeline_log.txt before using results in \
 case the script terminated unexpectedly."
+echo [$(date)] "PID: $$" >> ${LOG}
 
-LOG=${OD}/pipeline_log.txt
 exec 3>&1 1>>${LOG} 2>&1 	# handles printing of messages to log and terminal
 
 echo "===========================================================" >> ${LOG}
@@ -143,7 +186,7 @@ echo "===========================================================" >> ${LOG}
 for assumptions in ${WD}/assumptions.txt; do
 
   # run run.pbs, launching parralel jobs
-  qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${ASSUMPTIONS} run.pbs
+  qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${assumptions} run.pbs
 
 done
 

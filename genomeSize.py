@@ -35,25 +35,22 @@ parser.add_argument('-i', action='store', type=bool, required=True, dest='indel'
 # rd
 parser.add_argument('-rc', action='store', type=bool, required=True, dest='rc')
 
-
-
 args = parser.parse_args()
-print(args.accumulate(args.integers))
 
 
 def main ():
 
-    test_flags()
+    # test_flags()
 
-    # # 1) get read volume
-    # volume = readVolume(args.volume_path)
+    # 1) get read volume
+    volume = readVolume(args.volume_path)
 
-    # # 2) get read depth
-    # depths = readPileup(args.pileup_path)
-    # depth = getDepth(args.method, depths) 
+    # 2) get read depth
+    depths = readPileup(args.pileup_path)
+    depth = getDepth(args.method, depths) 
 
-    # # 3) calculate genome size (takes the floor function)
-    # genome_size = volume / depth
+    # 3) calculate genome size (takes the floor function)
+    genome_size = volume / depth
 
     # 4) print out into a parseable log file with list of assumptions (ALANA)
 

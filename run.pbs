@@ -96,4 +96,4 @@ echo INDEL=${INDEL}
 echo R_CLIPPING=${R_CLIPPING}
 
 # taking outputs and giving an answer
-python3 genomeSize.py -OD ${OD} -n ${NAME} -p ${PILE} -v ${VOLUME} -m ${METHOD} -i ${INDEL} -rc ${R_CLIPPING}
+python3 genomeSize.py -od ${OD} -n ${NAME} -p ${PILEUP} -v ${VOLUME} -m ${METHOD} -i ${INDEL} -rc ${R_CLIPPING}
