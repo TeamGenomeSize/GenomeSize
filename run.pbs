@@ -36,6 +36,7 @@ module load samtools/1.10
 ##################
 ## EXPAND FLAGS ##
 ##################
+THREADS=2
 FILTER_LEN=${filter_len}
 BAM=${bam}
 WD=${wd}
@@ -43,7 +44,6 @@ OD=${od}
 SCO=${sco}
 NAME=${name}
 ASSUMPTIONS=${assumptions}
-THREADS=2
 VOLUME=${OD}/${NAME}_read_volume.txt
 PILEUP=${OD}/${NAME}_pileup.out
 METHOD=$( echo ${ASSUMPTIONS} | cut -d',' -f1 | cut -d'=' -f2 )
@@ -57,9 +57,9 @@ R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
 # calculate samtools stats to get one volume value
 if [[ -z "${FILTER_LEN}" ]]
 then
-    samtools stats -@ ${THREADS} ${bam} | grep ^RL | cut -f 2- | awk '{total+=$1*$2} END{print total}' > ${VOLUME}
+    samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk '{total+=$1*$2} END{print total}' > ${VOLUME}
 else
-    samtools stats -@ ${THREADS} ${bam} | grep ^RL | cut -f 2- | awk -v min="${filter_len}" '{if($1 >= min) total+=$1*$2 } END{print total}' > ${VOLUME}
+    samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk -v min="${FILTER_LEN}" '{if($1 >= min) total+=$1*$2 } END{print total}' > ${VOLUME}
 fi
 
 

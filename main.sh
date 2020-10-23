@@ -153,7 +153,6 @@ echo "Error handling of arguments complete, you may now close the terminal"
 echo "---"
 echo "Make sure to check pipeline_log.txt before using results in \
 case the script terminated unexpectedly."
-echo [$(date)] "PID: $$" >> ${LOG}
 
 exec 3>&1 1>>${LOG} 2>&1 	# handles printing of messages to log and terminal
 
@@ -177,8 +176,6 @@ echo "===========================================================" >> ${LOG}
 # Compute array of assumptions to try
 python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
 
-# test
-echo method=maxMedDepth,indel=false,r_clipping=false > ${WD}/assumptions.txt
 
 echo "===========================================================" >> ${LOG}
 
@@ -186,7 +183,8 @@ echo "===========================================================" >> ${LOG}
 for assumptions in ${WD}/assumptions.txt; do
 
   # run run.pbs, launching parralel jobs
-  qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${assumptions} run.pbs
+  qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${assumptions} run.pbs > ${JOBID}
+  echo $JOBID
 
 done
 
