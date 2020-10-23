@@ -1,6 +1,5 @@
  -- changed directory -- 
  -- load samtools --
  -- run calcReadVolume.sh --
-512042357
-661620079
-750802752
+samtools view: writing to standard output failed: Broken pipe
+samtools view: error closing standard output: -1

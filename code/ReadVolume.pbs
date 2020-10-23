@@ -19,12 +19,20 @@ echo " -- run calcReadVolume.sh --"
 
 chmod u+x calcReadVolume.sh
 
+samtools view /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam | head -n 10 | cut -f 6  > results
+
 # run with 10kb, 5kb, none - min read cutoff
+# echo " -- e_coli Read Volume -- "
+# ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam" 
 
-./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"  10000
+# ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"  5000
 
-./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"  5000
+# ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"  10000
 
-./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam"  
+# echo " -- s_cerevisae Read Volume -- "
+# ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam"  
 
+# ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam"  5000
+
+# ./calcReadVolume.sh "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam"  10000
 
