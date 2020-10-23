@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#PBS -l select=1:ncpus=1:mem=4gb
+#PBS -l walltime=1:00:00
+#PBS -M sebastianporterzadro@gmail.com
+#PBS -m ae
+#PBS -j oe
+
+cd /srv/scratch/z5113143/GenomeSize/
+
+source venv/bin/activate
+
+cd code/
+
+python3 indel_clipping_counter.py > indel_clipping_counter_output.txt
