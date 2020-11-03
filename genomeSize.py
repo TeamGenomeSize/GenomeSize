@@ -68,16 +68,16 @@ def main ():
     # genome_size
 
 def createLog():
-    log = Path("genomeSize_log.csv")
+    log = Path(args.od + "/genomeSize_log.csv")
     if not log.is_file():
         with open('genomeSize_log.csv', 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Method", "Filter", "Indel Bias", "Volume", "Depth", "Genome Size"])
+            writer.writerow(["Method", "Filter", "Indel Bias", "Read Clipping", "Volume", "Depth", "Genome Size"])
 
 def generateLog(vol, depth, gs):
-    with open('genomeSize_log.csv', 'a+', newline='') as file:
+    with open(args.od+'/genomeSize_log.csv', 'a+', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([args.method, "filter", args.indel, vol, depth, gs])
+        writer.writerow([args.method, "filter", args.indel, args.rc, vol, depth, gs])
 
 def readVolume(readVolumeFile: str):
     f = open(readVolumeFile, "r")
