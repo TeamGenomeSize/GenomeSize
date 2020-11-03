@@ -16,6 +16,7 @@
 # sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/busco3/run_${NAME}/full_table_${NAME}.tsv
 # WD=$(pwd)
 
+
 # setting default flags
 CALC_SCO=false
 FILTER_LEN=5000
@@ -183,7 +184,7 @@ echo "===========================================================" >> ${LOG}
 for assumptions in ${WD}/assumptions.txt; do
 
   # run run.pbs, launching parralel jobs
-  qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${assumptions} run.pbs > ${JOBID}
+  JOBID=$(qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},assumptions=${ASSUMPTIONS} run.pbs)
   echo $JOBID
 
 done
