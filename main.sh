@@ -183,6 +183,7 @@ echo "===========================================================" >> ${LOG}
 for assumptions in ${WD}/assumptions.txt; do
 
   # run run.pbs, launching parralel jobs
+  echo "qsub v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${assumptions} run.pbs"
   qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${assumptions} run.pbs > ${JOBID}
   echo $JOBID
 

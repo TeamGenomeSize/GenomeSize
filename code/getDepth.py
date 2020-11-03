@@ -44,19 +44,27 @@ def getDepth(method: str, depths: list):
 def readPileup(pileupFile):
     f = open(pileupFile, "r")
     depths = []
+    depths_no_mismatch = []
     
     curr_gene = []
+    curr_gene_no_mismatch = []
     index = 0
     
     for line in f:
         # vals[1] = index
         # vals[3] = depth at given base
+        # vals[5] = base read
+        
         vals = line.split()
         if int(vals[1]) != index + 1 and index != 0:
             depths.append(curr_gene)
+            depths_no_mismatch.append(curr_gene_no_mismatch)
             curr_gene = []
+            curr_gene_no_mismatch = []
                 
-        curr_gene.append(int(vals[3]))    
+        curr_gene.append(int(vals[3]))
+        mismatches = count_mismatch(vals[5])
+        curr_gene_no_mismatch.append(int(vals[3])-mismatches)
         
         index = int(vals[1])
     
@@ -64,6 +72,9 @@ def readPileup(pileupFile):
     
     return depths
 
+def count_mismatch(bases):
+    
+    return 0
 
 # https://stackoverflow.com/questions/10797819/finding-the-mode-of-a-list/10797913
 # creates a list of unique somethings
