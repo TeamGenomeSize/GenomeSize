@@ -1,0 +1,1 @@
+method=maxMedDepth,indel=false,r_clipping=false

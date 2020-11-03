@@ -25,6 +25,19 @@ def usageExample():
 
     f.close()
 
+def getDepth(method: str, depths: list):
+    
+    if method == 'mmDepth':
+        depth = modeOfModes(depths)     # list
+
+    elif method == 'maxDepth':
+        depth = maxMode(depths)         # list
+
+    elif method == 'maxMedDepth':
+        depth = maxMedian(depths)    # int
+
+    return depth
+
 # Input: pileup file
 # Output: A list a lists [sco] where sco = [read depth of bases]
 # Generates read depth from a pileup file
