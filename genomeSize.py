@@ -53,6 +53,8 @@ def main ():
     # 3) calculate genome size (takes the floor function)
     genome_size = volume / depth
 
+    createLog()
+    generateLog()
     # 4) print out into a parseable log file with list of assumptions (ALANA)
 
     # e.g. print('method =', args.method)
