@@ -5,7 +5,8 @@
 # UNTESTED #
 ############
 
-
+import csv
+from pathlib import Path
 import argparse
 from code.getDepth import readPileup, getDepth
 
@@ -66,8 +67,17 @@ def main ():
     # depth
     # genome_size
 
-    
+def createLog():
+    log = Path("genomeSize_log.csv")
+    if not log.is_file():
+        with open('genomeSize_log.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Method", "Filter", "Indel Bias", "Volume", "Depth", "Genome Size"])
 
+def generateLog(vol, depth, gs):
+    with open('genomeSize_log.csv', 'a+', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([args.method, "filter", args.indel, vol, depth, gs])
 
 def readVolume(readVolumeFile: str):
     f = open(readVolumeFile, "r")
