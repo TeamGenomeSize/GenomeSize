@@ -78,7 +78,7 @@ samtools sort -@ ${THREADS} -o ${OD}/${NAME}.sort.bam ${OD}/${NAME}.bam
 samtools index -@ ${THREADS} -b ${OD}/${NAME}.sort.bam
 cp ${OD}/${NAME}.sort.bam.bai ${OD}/${NAME}.bam.bai
 
-samtools mpileup -l ${OD}/${NAME}_sorted.bed ${OD}/${NAME}.bam > ${PILEUP}
+samtools mpileup -BQ0 -l ${OD}/${NAME}_sorted.bed ${OD}/${NAME}.bam > ${PILEUP}
 
 
 #################
