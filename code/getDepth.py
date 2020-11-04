@@ -80,18 +80,18 @@ def count_match(string):
     
     return max(bases.values())
 
-# # https://stackoverflow.com/questions/10797819/finding-the-mode-of-a-list/10797913
-# # creates a list of unique somethings
-# def mode(array):
-#     most = max(list(map(array.count, array)))
-#     return list(set(filter(lambda x: array.count(x) == most, array)))
+# https://stackoverflow.com/questions/10797819/finding-the-mode-of-a-list/10797913
+# creates a list of unique somethings
+def mode(array):
+    most = max(list(map(array.count, array)))
+    return list(set(filter(lambda x: array.count(x) == most, array)))
 
 
 def modeOfModes(depths):
     modes = []
     for d in depths:
         modes += mode(d)
-    return mode(modes)
+    return math.mode(modes)
 
 
 def maxMode(depths):
@@ -99,7 +99,7 @@ def maxMode(depths):
     for d in depths:
         maxes.append(max(d))
     
-    return mode(maxes)
+    return math.mode(maxes)
     
 def maxMedian(depths):
     maxes = []
