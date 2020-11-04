@@ -10,11 +10,11 @@
 # ./main.sh -od ${od} -nm ${NAME} -wd ${WD} -b ${bam} -sco ${sco} &
 # disown -h %1
 
-# NAME=e_coli
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/bam/${NAME}.bam
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/busco3/run_${NAME}/full_table_${NAME}.tsv
-# WD=$(pwd)
+NAME=e_coli
+od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/out
+bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/bam/${NAME}.bam
+sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/busco3/run_${NAME}/full_table_${NAME}.tsv
+#WD=$(pwd)
 
 
 # setting default flags
@@ -181,13 +181,11 @@ python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
 echo "===========================================================" >> ${LOG}
 
 # Run the different combinations of variable (python generated)
-for assumptions in ${WD}/assumptions.txt; do
-
+while read ASSUMPTIONS; do
   # run run.pbs, launching parralel jobs
   JOBID=$(qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},assumptions=${ASSUMPTIONS} run.pbs)
   echo $JOBID
-
-done
+done < ${WD}/assumptions.txt
 
 
 ## DELETE AND TIDY FILES

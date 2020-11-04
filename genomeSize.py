@@ -54,7 +54,7 @@ def main ():
     genome_size = volume / depth
 
     createLog()
-    generateLog()
+    generateLog(volume, depth, genome_size)
     # 4) print out into a parseable log file with list of assumptions (ALANA)
 
     # e.g. print('method =', args.method)
@@ -82,14 +82,12 @@ def generateLog(vol, depth, gs):
         writer.writerow([args.method, "filter", args.indel, args.rc, vol, depth, gs])
 
 def readVolume(readVolumeFile: str):
-    f = open(readVolumeFile, "r")
+    read_volume = 0
 
-    for line in f:
-        read_volume = int(line)
-
-    f.close()
+    with open(readVolumeFile) as f:
+        read_volume = f.readline().strip()
     
-    return read_volume
+    return int(read_volume)
 
 
 
