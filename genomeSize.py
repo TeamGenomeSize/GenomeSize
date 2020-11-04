@@ -59,6 +59,8 @@ def main ():
     depth_matches = getDepth(args.method, depth_matches)
     genome_size_matches = volume / depth_matches
     
+    generateLog(volume, depth_matches, genome_size_matches)
+    
     # 4) print out into a parseable log file with list of assumptions (ALANA)
 
     # e.g. print('method =', args.method)
