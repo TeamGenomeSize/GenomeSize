@@ -6,28 +6,33 @@
 	# you may exit the shell when following is printed to the terminal:
 	# "Completed error checking inputs, pipeline will complete in background"
 # run with:
-# mkdir -p ${OD} 
-# ./main.sh -od ${od} -nm ${NAME} -wd ${WD} -b ${bam} -sco ${sco} &
+# mkdir -p ${od}; ./main.sh -od ${od} -nm ${name} -wd ${wd} -b ${bam} -sco ${sco} -t ${threads} &
 # disown -h %1
 
-NAME=e_coli
-od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/out
-bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/bam/${NAME}.bam
-sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/busco3/run_${NAME}/full_table_${NAME}.tsv
-#WD=$(pwd)
+# CHELSEA
+# name=e_coli
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test_full1
+# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
+# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
+# wd=$(pwd)
+# threads=2
+
+# ALANA
+# name=e_coli
+# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/out
+# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
+# wd=$(pwd)
+# threads=2
 
 
 # setting default flags
 CALC_SCO=false
 FILTER_LEN=5000
+THREADS=2
 
-
-############
-# UNTESTED #
-############
 
 ## LOGS AND ERRORS
-SECONDS=0					# records time taken by whole pipeline
 set -e						# if any error occurs, exit 1
 
 
@@ -38,12 +43,13 @@ set -e						# if any error occurs, exit 1
 # Mandatory:
 # - ${OD}, path of the working/output directory of script
 # - ${NAME}, rootname for files created by pipeline
-# - #{wd}, path to top level of code i.e. same level as this main.sh script
+# - #{WD}, path to top level of code i.e. same level as this main.sh script
 
 # Optional:
 # - ${REF_GENOME}, path to reference genome
 # - ${SCO}, path to tsv of BUSCO single copy ortholog output
 # - ${BAM}, path to bam file of mapped reads
+# - ${THREADS}, number of threads to run samtools computations
 
 
 ##                                                                              ##
@@ -75,6 +81,7 @@ else
       "-fl"|"--filter_len"              ) FILTER_LEN="$1"; shift;;
       "-nm"|"--name"                    ) NAME="$1"; shift;;
       "-wd"|"--working_dir"             ) WD="$1"; shift;;
+      "-t"|"--threads"                  ) THREADS="$1"; shift;;
       *                                 ) echo "ERROR: Invalid option: \""$opt"\"" >&2
       exit 1;;
     esac
@@ -150,16 +157,15 @@ fi
 
 
 LOG=${OD}/pipeline_log.txt
-echo "Error handling of arguments complete, you may now close the terminal"
-echo "---"
-echo "Make sure to check pipeline_log.txt before using results in \
-case the script terminated unexpectedly."
+touch ${LOG}
 
-exec 3>&1 1>>${LOG} 2>&1 	# handles printing of messages to log and terminal
+# exec 3>&1 1>>${LOG} 2>&1 	# handles printing of messages to log and terminal
 
-echo "===========================================================" >> ${LOG}
-echo [$(date)] "PID: $$" >> ${LOG}
-echo "===========================================================" >> ${LOG}
+
+{
+echo "===========================================================" 
+echo [$(date)] "PID: $$" 
+echo "===========================================================" 
 
 # Print current envrionment variables
 echo "BAM =${BAM}"
@@ -168,33 +174,49 @@ echo "SCO = ${SCO}"
 echo "NAME = ${NAME}"
 echo "REF_GENOME = ${REF_GENOME}"
 
-echo "===========================================================" >> ${LOG}
+echo "===========================================================" 
 
-# # Running BUSCO or MMSeq2 would happen up here (Epic Story 4)
-# # TODO
+# Running BUSCO or MMSeq2 would happen up here (Epic Story 4)
+# TODO
 
 
-# Compute array of assumptions to try
+echo "===========================================================" 
+
+echo "[Compute all intermediary files]"
+PRELIM_PROCESS_ID=$(qsub \
+-o ${OD} \
+-l select=${THREADS}:ncpus=1:mem=4gb \
+-v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN} \
+${WD}/code/run_samtools.pbs | cut -d'.' -f1)
+echo "PRELIM_PROCESS_ID is ${PRELIM_PROCESS_ID}"
+
+echo "===========================================================" 
+
+echo "[Compute array of assumptions to try]"
 python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
 
+echo "===========================================================" 
 
-echo "===========================================================" >> ${LOG}
-
-# Run the different combinations of variable (python generated)
+echo "[Run run.pbs, launching parralel genome calculations]"
 while read ASSUMPTIONS; do
-  # run run.pbs, launching parralel jobs
-  JOBID=$(qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},assumptions=${ASSUMPTIONS} run.pbs)
-  echo $JOBID
+  JOBID=$(qsub \
+  -o ${OD} \
+  -W depend=afterok:${PRELIM_PROCESS_ID} \
+  -v WD=${WD},OD=${OD},NAME=${NAME},ASSUMPTIONS=${ASSUMPTIONS},filter_len=${FILTER_LEN} \
+  ${WD}/run.pbs)
+  echo "qsub jobid is ${JOBID}"
 done < ${WD}/assumptions.txt
 
+echo "===========================================================" 
+echo "[Delete and tidy files]"
 
-## DELETE AND TIDY FILES
 
 
-
-## PRINTS DURATION OF SCRIPT
-echo "$((${SECONDS} / 3600)) hours, $(((${SECONDS} / 60) % 60)) minutes and $((${SECONDS} % 60)) seconds elapsed" >> ${LOG}
-echo [$(date)] "COMPLETED PIPELINE for: ${NAME}" >> ${LOG}
-echo "===========================================================" >> ${LOG}
-
+echo "===========================================================" 
+echo [$(date)] "ALL JOBS LAUNCHED for: ${NAME}" 
+echo "Make sure to check pipeline_log.txt which has a record of"
+echo "this command line output. Check the qsub logs before using"
+echo "results in case the script terminated unexpectedly."
+echo "===========================================================" 
+} | tee -a ${LOG}
 
