@@ -51,9 +51,9 @@ def readPileup(pileupFile):
     index = 0
     
     for line in f:
-        # vals[1] = index
+        # vals[1] = position
         # vals[3] = depth at given base
-        # vals[5] = base read
+        # vals[5] = base read at position
         
         vals = line.split()
         if int(vals[1]) != index + 1 and index != 0:
@@ -61,26 +61,30 @@ def readPileup(pileupFile):
             depths_no_mismatch.append(curr_gene_no_mismatch)
             curr_gene = []
             curr_gene_no_mismatch = []
-                
+        
         curr_gene.append(int(vals[3]))
-        mismatches = count_mismatch(vals[5])
-        curr_gene_no_mismatch.append(int(vals[3])-mismatches)
+        matches = count_match(vals[5])
+        curr_gene_no_mismatch.append(matches)
         
         index = int(vals[1])
     
     f.close()
     
-    return depths
+    return depths, depths_no_mismatch
 
-def count_mismatch(bases):
+def count_match(string):
+    bases = {"a": 0, "c": 0, "g":0, "t":0}
+    for i in string.lower():
+        if i in bases:
+            bases[i] += 1
     
-    return 0
+    return max(bases.values())
 
-# https://stackoverflow.com/questions/10797819/finding-the-mode-of-a-list/10797913
-# creates a list of unique somethings
-def mode(array):
-    most = max(list(map(array.count, array)))
-    return list(set(filter(lambda x: array.count(x) == most, array)))
+# # https://stackoverflow.com/questions/10797819/finding-the-mode-of-a-list/10797913
+# # creates a list of unique somethings
+# def mode(array):
+#     most = max(list(map(array.count, array)))
+#     return list(set(filter(lambda x: array.count(x) == most, array)))
 
 
 def modeOfModes(depths):
