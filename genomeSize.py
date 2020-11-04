@@ -5,7 +5,8 @@
 # UNTESTED #
 ############
 
-
+import csv
+from pathlib import Path
 import argparse
 from code.getDepth import readPileup, getDepth
 
@@ -52,6 +53,8 @@ def main ():
     # 3) calculate genome size (takes the floor function)
     genome_size = volume / depth
 
+    createLog()
+    generateLog()
     # 4) print out into a parseable log file with list of assumptions (ALANA)
 
     # e.g. print('method =', args.method)
@@ -66,8 +69,17 @@ def main ():
     # depth
     # genome_size
 
-    
+def createLog():
+    log = Path(args.od + "/genomeSize_log.csv")
+    if not log.is_file():
+        with open('genomeSize_log.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Method", "Filter", "Indel Bias", "Read Clipping", "Volume", "Depth", "Genome Size"])
 
+def generateLog(vol, depth, gs):
+    with open(args.od+'/genomeSize_log.csv', 'a+', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([args.method, "filter", args.indel, args.rc, vol, depth, gs])
 
 def readVolume(readVolumeFile: str):
     f = open(readVolumeFile, "r")
