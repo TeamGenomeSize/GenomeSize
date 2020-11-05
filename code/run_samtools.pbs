@@ -67,7 +67,9 @@ sort -n -k 2 ${OD}/${NAME}.bed > ${SORTED_BED}
 
 cp ${bam} ${OD}/
 # samtools view to filter shorter reads
-samtools view -h $dirname/s_cerevisiae.bam | awk -v filt="${FILTER_LEN}" 'length($10) > filt || $1 ~ /^@/' | samtools view -bS - > $dirname/s_cerevisiae.filtered.bam
+samtools view -h ${OD}/${NAME}.bam | awk -v filt="${FILTER_LEN}" 'length($10) > filt || $1 ~ /^@/' | samtools view -bS - > ${OD}/${NAME}.filtered.bam
+mv ${OD}/${NAME}.bam ${OD}/${NAME}.orig,bam
+mv ${OD}/${NAME}.filtered.bam ${OD}/${NAME}.bam
 samtools sort -@ ${THREADS} -o ${OD}/${NAME}.sort.bam ${OD}/${NAME}.bam
 samtools index -@ ${THREADS} -b ${OD}/${NAME}.sort.bam
 cp ${OD}/${NAME}.sort.bam.bai ${OD}/${NAME}.bam.bai
