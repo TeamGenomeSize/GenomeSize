@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#PBS -N filter_depth.pbs
+#PBS -l walltime=00:30:00
+#PBS -j oe
+#PBS -l select=1:ncpus=1:mem=4gb
+#PBS -o /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/filter_depth_log
+
+cd /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output
+
+time=$(date "+%Y.%m.%d-%H.%M.%S")
+
+dirname=filterdepth.$time
+
+mkdir $dirname
+
+# get bed file
+egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv | \
+cut -f3,4,5 | \
+sed -e 's/\t/ /g' | \
+egrep -v '^$' > $dirname/s_cerevisiae.bed
+sort -n -k 2 $dirname/s_cerevisiae.bed > $dirname/s_cerevisiae.sorted.bed
+
+module load samtools
+
+cp /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam $dirname/
+
+filt=5000
+# filter out reads shorter than a certain value with awk?
+samtools view -h $dirname/s_cerevisiae.bam | awk "length($10) > ${filt} || $1 ~ /^@/" | samtools view -bS - > $dirname/s_cerevisiae.filtered.bam
+
+
+samtools sort -o $dirname/s_cerevisiae.sort.bam $dirname/s_cerevisiae.filtered.bam
+samtools index -b $dirname/s_cerevisiae.sort.bam
+cp $dirname/s_cerevisiae.sort.bam.bai $dirname/s_cerevisiae.bam.bai
+samtools mpileup -BQ0 -l $dirname/s_cerevisiae.sorted.bed $dirname/s_cerevisiae.bam > $dirname/pileup.out
+
+
+# samtools view -h ${OD}/${NAME}.bam | awk "length($10) > ${FILTER_LEN} || $1 ~ /^@/" | samtools view -bS - > ${OD}/${NAME}_filtered.bam
+
+# samtools sort -@ ${THREADS} -o ${OD}/${NAME}.${FILTER_LEN}.filtered.sort.bam ${OD}/${NAME}.${FILTER_LEN}.filtered.bam
+# samtools index -@ ${THREADS} -b ${OD}/${NAME}.${FILTER_LEN}.filtered.sort.bam
+# cp ${OD}/${NAME}.${FILTER_LEN}.filtered.sort.bam.bai ${OD}/${NAME}.${FILTER_LEN}.filtered.bam.bai
+
+# samtools mpileup -BQ0 -l ${OD}/${NAME}.${FILTER_LEN}.sorted.bed ${OD}/${NAME}.${FILTER_LEN}.filtered.bam > ${PILEUP}
