@@ -3,7 +3,7 @@
 
 import sys, re
 
-samtools_view_output = "output.txt"
+samtools_view_output = "view.out"
 
 f = open(samtools_view_output, "r")
 
