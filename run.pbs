@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #PBS -N run.pbs
-#PBS -l walltime=00:30:00
+#PBS -l walltime=6:00:00
 #PBS -j oe
 
 set -e						# if any error occurs, exit 1

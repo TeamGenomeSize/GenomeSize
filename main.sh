@@ -11,19 +11,48 @@
 
 # CHELSEA
 # name=e_coli
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test_full2
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/test_e_coli
 # bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
 # sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
 # wd=$(pwd)
 # threads=2
 
-# ALANA
-# name=e_coli
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/out
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
+# name=s_cerevisiae
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae
+# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam
+# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv
 # wd=$(pwd)
 # threads=2
+
+# name=c_elegans
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans
+# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/bam/c_elegans.bam
+# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/busco3/run_c_elegans/full_table_c_elegans.tsv
+# wd=$(pwd)
+# threads=4
+
+# name=m_musculus
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus
+# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/bam/m_musculus.bam
+# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/busco3/run_m_musculus/full_table_m_musculus.tsv
+# wd=$(pwd)
+# threads=4
+
+# name=d_melanogaster
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster
+# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/bam/d_melanogaster.bam
+# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/busco3/run_d_melanogaster/full_table_d_melanogaster.tsv
+# wd=$(pwd)
+# threads=4
+
+# name=a_thaliana
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana
+# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam
+# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/busco3/run_a_thaliana/full_table_a_thaliana.tsv
+# wd=$(pwd)
+# threads=4
+
+
 
 
 # setting default flags
@@ -214,7 +243,7 @@ done < ${WD}/assumptions.txt
 echo "===========================================================" 
 echo "[Delete and tidy files]"
 
-
+chmod -R 775 ${OD}
 
 echo "===========================================================" 
 echo [$(date)] "ALL JOBS LAUNCHED for: ${NAME}" 
