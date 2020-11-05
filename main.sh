@@ -182,13 +182,13 @@ echo "==========================================================="
 
 echo "===========================================================" 
 
-echo "[Compute all intermediary files]"
-PRELIM_PROCESS_ID=$(qsub \
--o ${OD} \
--l select=${THREADS}:ncpus=1:mem=4gb \
--v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN} \
-${WD}/code/run_samtools.pbs | cut -d'.' -f1)
-echo "PRELIM_PROCESS_ID is ${PRELIM_PROCESS_ID}"
+# echo "[Compute all intermediary files]"
+# PRELIM_PROCESS_ID=$(qsub \
+# -o ${OD} \
+# -l select=${THREADS}:ncpus=1:mem=4gb \
+# -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN} \
+# ${WD}/code/run_samtools.pbs | cut -d'.' -f1)
+# echo "PRELIM_PROCESS_ID is ${PRELIM_PROCESS_ID}"
 
 echo "===========================================================" 
 
@@ -199,10 +199,13 @@ echo "==========================================================="
 
 echo "[Run run.pbs, launching parralel genome calculations]"
 while read ASSUMPTIONS; do
+  METHOD=$( echo ${ASSUMPTIONS} | cut -d',' -f1 | cut -d'=' -f2 )
+  INDEL=$( echo ${ASSUMPTIONS} | cut -d',' -f2 | cut -d'=' -f2 )
+  R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
+
   JOBID=$(qsub \
   -o ${OD} \
-  -W depend=afterok:${PRELIM_PROCESS_ID} \
-  -v WD=${WD},OD=${OD},NAME=${NAME},ASSUMPTIONS=${ASSUMPTIONS},filter_len=${FILTER_LEN} \
+  -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
   ${WD}/run.pbs)
   echo "qsub jobid is ${JOBID}"
 done < ${WD}/assumptions.txt

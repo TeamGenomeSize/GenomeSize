@@ -35,7 +35,7 @@ parser.add_argument('-m', action='store', type=str, required=True, dest='method'
 parser.add_argument('-i', action='store', type=str, required=True, dest='indel')
 # rc
 parser.add_argument('-rc', action='store', type=str, required=True, dest='rc')
-# rc
+# fl
 parser.add_argument('-fl', action='store', type=int, required=True, dest='filter_len')
 
 args = parser.parse_args()

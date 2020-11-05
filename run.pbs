@@ -22,33 +22,25 @@ set -e						# if any error occurs, exit 1
 cd ${WD}
 
 ##################
-## LOAD MODULES ##
-##################
-module load samtools/1.10
-
-
-##################
 ## EXPAND FLAGS ##
 ##################
 VOLUME=${OD}/${NAME}_read_volume.txt
 PILEUP=${OD}/${NAME}_pileup.out
-METHOD=$( echo ${ASSUMPTIONS} | cut -d',' -f1 | cut -d'=' -f2 )
-INDEL=$( echo ${ASSUMPTIONS} | cut -d',' -f2 | cut -d'=' -f2 )
-R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
 
 #################
 ## GENOME SIZE ##
 #################
 
+echo "===========================================================" 
 echo "about to run genomeSize.py"
-
-echo OD=${OD}
-echo NAME=${NAME}
-echo PILEUP=${PILEUP}
-echo VOLUME=${VOLUME}
-echo METHOD=${METHOD}
-echo INDEL=${INDEL}
-echo R_CLIPPING=${R_CLIPPING}
+echo "OD=${OD}"
+echo "NAME=${NAME}"
+echo "PILEUP=${PILEUP}"
+echo "VOLUME=${VOLUME}"
+echo "METHOD=${METHOD}"
+echo "INDEL=${INDEL}"
+echo "R_CLIPPING=${R_CLIPPING}"
+echo "===========================================================" 
 
 # taking outputs and giving an answer
 python3 genomeSize.py -od ${OD} -n ${NAME} -p ${PILEUP} -v ${VOLUME} \
