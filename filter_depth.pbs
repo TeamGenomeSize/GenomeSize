@@ -15,24 +15,25 @@ dirname=filterdepth.$time
 mkdir $dirname
 
 # get bed file
-egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
+egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv | \
 cut -f3,4,5 | \
-sed -e 's/\t/ /g' > $dirname/e_coli.bed | \
-egrep -v '^$' > $dirname/e_coli.bed | \
-sort -n -k 2 $dirname/e_coli.bed > $dirname/e_coli.sorted.bed
+sed -e 's/\t/ /g' | \
+egrep -v '^$' > $dirname/s_cerevisiae.bed
+sort -n -k 2 $dirname/s_cerevisiae.bed > $dirname/s_cerevisiae.sorted.bed
 
 module load samtools
 
-cp /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam $dirname/
+cp /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam $dirname/
 
+filt=5000
 # filter out reads shorter than a certain value with awk?
-samtools view -h $dirname/e_coli.bam | awk -v fil="${FILTER_LEN}" 'length($10) > fil || $1 ~ /^@/' | samtools view -bS - > $dirname/e_coli.filtered.bam
+samtools view -h $dirname/s_cerevisiae.bam | awk 'length($10) > 5000 || $1 ~ /^@/' | samtools view -bS - > $dirname/s_cerevisiae.filtered.bam
 
 
-samtools sort -o $dirname/e_coli.sort.bam $dirname/e_coli.filtered.bam
-samtools index -b $dirname/e_coli.sort.bam
-cp $dirname/e_coli.sort.bam.bai $dirname/e_coli.filtered.bam.bai
-samtools mpileup -BQ0 -l $dirname/e_coli.sorted.bed $dirname/e_coli.filtered.bam > $dirname/pileup.out
+samtools sort -o $dirname/s_cerevisiae.sort.bam $dirname/s_cerevisiae.filtered.bam
+samtools index -b $dirname/s_cerevisiae.sort.bam
+cp $dirname/s_cerevisiae.sort.bam.bai $dirname/s_cerevisiae.bam.bai
+samtools mpileup -BQ0 -l $dirname/s_cerevisiae.sorted.bed $dirname/s_cerevisiae.bam > $dirname/pileup.out
 
 
 # samtools view -h ${OD}/${NAME}.bam | awk "length($10) > ${FILTER_LEN} || $1 ~ /^@/" | samtools view -bS - > ${OD}/${NAME}_filtered.bam
