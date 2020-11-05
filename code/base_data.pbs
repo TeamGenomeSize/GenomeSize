@@ -46,3 +46,6 @@ samtools stats ${BAM} | grep ^RL | cut -f 2- | awk '{if($1 >= 5000) total+=$1*$2
 samtools view $BAM > view.out
 
 python3 indel_clipping_counter.py > indel_clipping_counter_output.txt
+
+chmod 755 $dirname
+chmod 755 $dirname/*
