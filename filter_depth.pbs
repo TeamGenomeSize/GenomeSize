@@ -27,7 +27,7 @@ cp /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.Reference
 
 filt=5000
 # filter out reads shorter than a certain value with awk?
-samtools view -h $dirname/s_cerevisiae.bam | awk "length($10) > ${filt} || $1 ~ /^@/" | samtools view -bS - > $dirname/s_cerevisiae.filtered.bam
+samtools view -h $dirname/s_cerevisiae.bam | awk 'length($10) > 5000 || $1 ~ /^@/' | samtools view -bS - > $dirname/s_cerevisiae.filtered.bam
 
 
 samtools sort -o $dirname/s_cerevisiae.sort.bam $dirname/s_cerevisiae.filtered.bam
