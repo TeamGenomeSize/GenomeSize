@@ -43,9 +43,9 @@ python3 /home/$USER/GenomeSize/code/depth_file.py $dirname
 samtools stats ${BAM} | grep ^RL | cut -f 2- | awk '{total+=$1*$2} END{print total}' >> $dirname/volume
 samtools stats ${BAM} | grep ^RL | cut -f 2- | awk '{if($1 >= 5000) total+=$1*$2 } END{print total}' >> $dirname/volume
 
-samtools view $BAM > view.out
+samtools view $dirname/$BAM > $dirname/view.out
 
-python3 indel_clipping_counter.py > indel_clipping_counter_output.txt
+python3 /home/$USER/GenomeSize/code/indel_clipping_counter.py $dirname > $dirname/indel_clipping_counter_output.txt
 
 chmod 755 $dirname
 chmod 755 $dirname/*

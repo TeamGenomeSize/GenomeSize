@@ -3,7 +3,7 @@
 
 import sys, re
 
-samtools_view_output = "view.out"
+samtools_view_output = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/{}/view.out".format(sys.argv[1])
 
 f = open(samtools_view_output, "r")
 
