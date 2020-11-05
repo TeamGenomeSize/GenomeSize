@@ -80,6 +80,14 @@ cp ${OD}/${NAME}.sort.bam.bai ${OD}/${NAME}.bam.bai
 
 samtools mpileup -BQ0 -l ${OD}/${NAME}_sorted.bed ${OD}/${NAME}.bam > ${PILEUP}
 
+samtools view -h ${OD}/${NAME}.bam | awk "length($10) > ${FILTER_LEN} || $1 ~ /^@/" | samtools view -bS - > ${OD}/${NAME}_filtered.bam
+
+samtools sort -@ ${THREADS} -o ${OD}/${NAME}_filtered.sort.bam ${OD}/${NAME}_filtered.bam
+samtools index -@ ${THREADS} -b ${OD}/${NAME}_filtered.sort.bam
+cp ${OD}/${NAME}_filtered.sort.bam.bai ${OD}/${NAME}_filtered.bam.bai
+
+samtools mpileup -BQ0 -l ${OD}/${NAME}_sorted.bed ${OD}/${NAME}_filtered.bam > ${PILEUP}
+
 
 #################
 ## GENOME SIZE ##
