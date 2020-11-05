@@ -11,7 +11,7 @@
 
 # CHELSEA
 # name=e_coli
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test_full1
+# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test_full2
 # bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
 # sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
 # wd=$(pwd)
@@ -182,13 +182,13 @@ echo "==========================================================="
 
 echo "===========================================================" 
 
-# echo "[Compute all intermediary files]"
-# PRELIM_PROCESS_ID=$(qsub \
-# -o ${OD} \
-# -l select=${THREADS}:ncpus=1:mem=4gb \
-# -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN} \
-# ${WD}/code/run_samtools.pbs | cut -d'.' -f1)
-# echo "PRELIM_PROCESS_ID is ${PRELIM_PROCESS_ID}"
+echo "[Compute all intermediary files]"
+PRELIM_PROCESS_ID=$(qsub \
+-o ${OD} \
+-l select=${THREADS}:ncpus=1:mem=4gb \
+-v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN} \
+${WD}/code/run_samtools.pbs | cut -d'.' -f1)
+echo "PRELIM_PROCESS_ID is ${PRELIM_PROCESS_ID}"
 
 echo "===========================================================" 
 
@@ -205,6 +205,7 @@ while read ASSUMPTIONS; do
 
   JOBID=$(qsub \
   -o ${OD} \
+  -W depend=afterok:${PRELIM_PROCESS_ID} \
   -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
   ${WD}/run.pbs)
   echo "qsub jobid is ${JOBID}"
