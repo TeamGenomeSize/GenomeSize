@@ -32,16 +32,18 @@ parser.add_argument('-p', action='store', type=str, required=True, dest='pileup_
 # m
 parser.add_argument('-m', action='store', type=str, required=True, dest='method')
 # i
-parser.add_argument('-i', action='store', type=bool, required=True, dest='indel')
-# rd
-parser.add_argument('-rc', action='store', type=bool, required=True, dest='rc')
+parser.add_argument('-i', action='store', type=str, required=True, dest='indel')
+# rc
+parser.add_argument('-rc', action='store', type=str, required=True, dest='rc')
+# rc
+parser.add_argument('-fl', action='store', type=int, required=True, dest='filter_len')
 
 args = parser.parse_args()
 
 
 def main ():
 
-    # test_flags()
+    test_flags()
 
     # 1) get read volume
     volume = readVolume(args.volume_path)
@@ -75,6 +77,7 @@ def main ():
     # depth
     # genome_size
 
+
 def createLog():
     log = Path(args.od + "/genomeSize_log.csv")
     if not log.is_file():
@@ -85,17 +88,15 @@ def createLog():
 def generateLog(vol, depth, gs):
     with open(args.od+'/genomeSize_log.csv', 'a+', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([args.method, "filter", args.indel, args.rc, vol, depth, gs])
+        writer.writerow([args.method, args.filter_len, args.indel, args.rc, vol, depth, gs])
 
 def readVolume(readVolumeFile: str):
-    f = open(readVolumeFile, "r")
+    read_volume = 0
 
-    for line in f:
-        read_volume = int(line)
-
-    f.close()
+    with open(readVolumeFile) as f:
+        read_volume = f.readline().strip()
     
-    return read_volume
+    return int(read_volume)
 
 
 
