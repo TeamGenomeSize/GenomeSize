@@ -1,17 +1,12 @@
 #!/bin/bash
 
-#PBS -l select=1:ncpus=1:mem=4gb
-#PBS -l walltime=1:00:00
-#PBS -m ae
+#PBS -l walltime=11:00:00
 #PBS -j oe
-#PBS -o /home/z5206657/GenomeSize/log
 
-cd /home/z5206657/GenomeSize/code
 
 module load samtools/1.10
 
-samtools view /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam  > output.txt
+samtools view -@ ${THREADS} ${BAM} > ${OD}/${NAME}.sam
+python3 ${WD}/code/indel_bias.py ${OD}/${NAME}.sam
+rm ${OD}/${NAME}.sam
 
-python3 indel_bias.py > indel_bias.output
-
-rm output.txt

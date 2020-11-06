@@ -5,7 +5,7 @@
 # UNTESTED #
 ############
 
-import csv
+import csv, re
 from pathlib import Path
 import argparse
 from code.getDepth import readPileup, getDepth
@@ -43,7 +43,9 @@ args = parser.parse_args()
 
 def main ():
 
-    test_flags()
+    # test_flags()
+
+    indel = bool(args.indel)
 
     # 1) get read volume
     volume = readVolume(args.volume_path)
@@ -53,23 +55,18 @@ def main ():
     depth = getDepth(args.method, depths) 
 
     # 3) calculate genome size (takes the floor function)
-    genome_size = volume / depth
+    if indel:
+        genome_size = volume / depth
+        
+        indel_ratio = args.volume_path.replace(".sam", "_indel_bias.txt")
+        indel_bias = readVolume(indel_ratio)
+
+        genome_size = genome_size / indel_bias
+    else:
+        genome_size = volume / depth
 
     createLog()
     generateLog(volume, depth, genome_size)
-    # 4) print out into a parseable log file with list of assumptions (ALANA)
-
-    # e.g. print('method =', args.method)
-    
-    #             method, filter, indel bias, 
-    # volume              50000
-    # depth
-    # genome_size=1million
-    # --------------------------
-    #             method, filter, indel bias, 
-    # volume      
-    # depth
-    # genome_size
 
 
 def createLog():
@@ -90,7 +87,7 @@ def readVolume(readVolumeFile: str):
     with open(readVolumeFile) as f:
         read_volume = f.readline().strip()
     
-    return int(read_volume)
+    return float(read_volume)
 
 
 

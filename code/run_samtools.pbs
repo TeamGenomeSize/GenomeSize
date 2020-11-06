@@ -28,7 +28,7 @@ module load samtools/1.10
 ##################
 ## EXPAND FLAGS ##
 ##################
-THREADS=2
+THREADS=${threads}
 FILTER_LEN=${filter_len}
 BAM=${bam}
 WD=${wd}
@@ -51,7 +51,6 @@ then
 else
     samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk -v min="${FILTER_LEN}" '{if($1 >= min) total+=$1*$2 } END{print total}' > ${VOLUME}
 fi
-
 
 ##################
 ## READ PILEUPS ##

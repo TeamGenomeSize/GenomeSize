@@ -2,8 +2,10 @@
 
 
 import sys, re
+import csv
+from pathlib import Path
 
-samtools_view_output = "output.txt"
+samtools_view_output = sys.argv[1]
 
 f = open(samtools_view_output, "r")
 
@@ -68,4 +70,12 @@ indel_dict["indel_bases"] = (counter_dict["total_matched_bases"] + counter_dict[
 #print(indel_dict["indel_regions"])
 
 # indel ratio
-print(indel_dict["indel_bases"])
+indel_ratio = samtools_view_output.replace(".sam", "_indel_bias.txt")
+log = Path(indel_ratio)
+if not log.is_file():
+    with open(indel_ratio, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(indel_dict["indel_bases"])
+
+
+
