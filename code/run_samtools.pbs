@@ -1,0 +1,74 @@
+#!/bin/bash
+
+#PBS -N run_samtools.sh
+#PBS -l walltime=11:59:00
+#PBS -j oe
+
+set -e						# if any error occurs, exit 1
+
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/bam/${NAME}.bam
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test
+# FILTER_LEN=5000
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/busco3/run_${NAME}/full_table_${NAME}.tsv
+# WD=$(pwd)
+# NAME=${NAME}
+
+#########
+# test runs
+# qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},\
+#  filter_len=${FILTER_LEN},assumptions=${ASSUMPTIONS} run.pbs
+cd $wd
+
+##################
+## LOAD MODULES ##
+##################
+module load samtools/1.10
+
+
+##################
+## EXPAND FLAGS ##
+##################
+THREADS=${threads}
+FILTER_LEN=${filter_len}
+BAM=${bam}
+WD=${wd}
+OD=${od}
+SCO=${sco}
+NAME=${name}
+ASSUMPTIONS=${assumptions}
+VOLUME=${OD}/${NAME}_read_volume.txt
+PILEUP=${OD}/${NAME}_pileup.out
+SORTED_BED=${OD}/${NAME}_sorted.bed
+
+#################
+## READ VOLUME ##
+#################
+
+# calculate samtools stats to get one volume value
+if [[ -z "${FILTER_LEN}" ]]
+then
+    samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk '{total+=$1*$2} END{print total}' > ${VOLUME}
+else
+    samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk -v min="${FILTER_LEN}" '{if($1 >= min) total+=$1*$2 } END{print total}' > ${VOLUME}
+fi
+
+##################
+## READ PILEUPS ##
+##################
+
+# get bed file
+egrep -v "^#" ${sco} | cut -f3,4,5 | sed -e 's/\t/ /g' | egrep -v '^$' > ${OD}/${NAME}.bed
+# create sorted bam file
+sort -n -k 2 ${OD}/${NAME}.bed > ${SORTED_BED}
+
+cp ${bam} ${OD}/
+# samtools view to filter shorter reads
+samtools view -h ${OD}/${NAME}.bam | awk -v filt="${FILTER_LEN}" 'length($10) > filt || $1 ~ /^@/' | samtools view -bS - > ${OD}/${NAME}.filtered.bam
+mv ${OD}/${NAME}.bam ${OD}/${NAME}.orig.bam
+mv ${OD}/${NAME}.filtered.bam ${OD}/${NAME}.bam
+# sort in order
+samtools sort -@ ${THREADS} -o ${OD}/${NAME}.sort.bam ${OD}/${NAME}.bam
+samtools index -@ ${THREADS} -b ${OD}/${NAME}.sort.bam
+cp ${OD}/${NAME}.sort.bam.bai ${OD}/${NAME}.bam.bai
+
+samtools mpileup -BQ0 -l ${OD}/${NAME}_sorted.bed ${OD}/${NAME}.bam > ${PILEUP}

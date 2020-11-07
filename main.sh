@@ -6,27 +6,61 @@
 	# you may exit the shell when following is printed to the terminal:
 	# "Completed error checking inputs, pipeline will complete in background"
 # run with:
-# mkdir -p ${OD} 
-# ./main.sh -od ${od} -nm ${NAME} -wd ${WD} -b ${bam} -sco ${sco} &
-# disown -h %1
+# rm -r ${OD}; mkdir ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
+# CHELSEA
 # NAME=e_coli
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/bam/${NAME}.bam
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/busco3/run_${NAME}/full_table_${NAME}.tsv
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
 # WD=$(pwd)
+# THREADS=2
+
+# NAME=s_cerevisiae
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv
+# WD=$(pwd)
+# THREADS=2
+
+# NAME=c_elegans
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/bam/c_elegans.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/busco3/run_c_elegans/full_table_c_elegans.tsv
+# WD=$(pwd)
+# THREADS=4
+
+# NAME=m_musculus
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/bam/m_musculus.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/busco3/run_m_musculus/full_table_m_musculus.tsv
+# WD=$(pwd)
+# THREADS=4
+
+# NAME=d_melanogaster
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/bam/d_melanogaster.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/busco3/run_d_melanogaster/full_table_d_melanogaster.tsv
+# WD=$(pwd)
+# THREADS=4
+
+# NAME=a_thaliana
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana_1
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/busco3/run_a_thaliana/full_table_a_thaliana.tsv
+# WD=$(pwd)
+# THREADS=4
+
+
+
 
 # setting default flags
 CALC_SCO=false
 FILTER_LEN=5000
+THREADS=2
 
-
-############
-# UNTESTED #
-############
 
 ## LOGS AND ERRORS
-SECONDS=0					# records time taken by whole pipeline
 set -e						# if any error occurs, exit 1
 
 
@@ -37,12 +71,13 @@ set -e						# if any error occurs, exit 1
 # Mandatory:
 # - ${OD}, path of the working/output directory of script
 # - ${NAME}, rootname for files created by pipeline
-# - #{wd}, path to top level of code i.e. same level as this main.sh script
+# - #{WD}, path to top level of code i.e. same level as this main.sh script
 
 # Optional:
 # - ${REF_GENOME}, path to reference genome
 # - ${SCO}, path to tsv of BUSCO single copy ortholog output
 # - ${BAM}, path to bam file of mapped reads
+# - ${THREADS}, number of threads to run samtools computations
 
 
 ##                                                                              ##
@@ -74,6 +109,7 @@ else
       "-fl"|"--filter_len"              ) FILTER_LEN="$1"; shift;;
       "-nm"|"--name"                    ) NAME="$1"; shift;;
       "-wd"|"--working_dir"             ) WD="$1"; shift;;
+      "-t"|"--threads"                  ) THREADS="$1"; shift;;
       *                                 ) echo "ERROR: Invalid option: \""$opt"\"" >&2
       exit 1;;
     esac
@@ -147,18 +183,14 @@ else
   exit 1
 fi
 
-
 LOG=${OD}/pipeline_log.txt
-echo "Error handling of arguments complete, you may now close the terminal"
-echo "---"
-echo "Make sure to check pipeline_log.txt before using results in \
-case the script terminated unexpectedly."
+touch ${LOG}
 
-exec 3>&1 1>>${LOG} 2>&1 	# handles printing of messages to log and terminal
 
-echo "===========================================================" >> ${LOG}
-echo [$(date)] "PID: $$" >> ${LOG}
-echo "===========================================================" >> ${LOG}
+{
+echo "===========================================================" 
+echo [$(date)] "PID: $$" 
+echo "===========================================================" 
 
 # Print current envrionment variables
 echo "BAM =${BAM}"
@@ -167,35 +199,67 @@ echo "SCO = ${SCO}"
 echo "NAME = ${NAME}"
 echo "REF_GENOME = ${REF_GENOME}"
 
-echo "===========================================================" >> ${LOG}
+echo "===========================================================" 
 
-# # Running BUSCO or MMSeq2 would happen up here (Epic Story 4)
-# # TODO
-
-
-# Compute array of assumptions to try
-python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
+# Running BUSCO or MMSeq2 would happen up here (Epic Story 4)
+# TODO
 
 
-echo "===========================================================" >> ${LOG}
+echo "===========================================================" 
 
-# Run the different combinations of variable (python generated)
-for assumptions in ${WD}/assumptions.txt; do
+echo "[Compute all intermediary files]"
+PRELIM_PROCESS_PID=$(qsub \
+-o ${OD} \
+-l select=${THREADS}:ncpus=1:mem=4gb \
+-v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},threads=${THREADS},filter_len=${FILTER_LEN} \
+${WD}/code/run_samtools.pbs | cut -d'.' -f1)
+echo "PRELIM_PROCESS_PID is ${PRELIM_PROCESS_PID}"
 
-  # run run.pbs, launching parralel jobs
-  qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},filter_len=${FILTER_LEN},method=${METHOD},assumptions=${assumptions} run.pbs > ${JOBID}
-  echo $JOBID
+echo "[Compute indel ratio]"
+INDEL_PID=$(qsub \
+-o ${OD} \
+-W depend=afterok:${PRELIM_PROCESS_PID} \
+-l select=${THREADS}:ncpus=1:mem=4gb \
+-v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} \
+${WD}/code/indel.pbs | cut -d'.' -f1)
+#qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} ${WD}/code/indel.pbs
+echo "INDEL_PID is ${INDEL_PID}"
 
-done
+echo "===========================================================" 
 
+echo "[Compute array of assumptions to try]"
+# python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
 
-## DELETE AND TIDY FILES
+echo "===========================================================" 
 
+echo "[Run run.pbs, launching parralel genome calculations]"
+while read ASSUMPTIONS; do
+  METHOD=$( echo ${ASSUMPTIONS} | cut -d',' -f1 | cut -d'=' -f2 )
+  INDEL=$( echo ${ASSUMPTIONS} | cut -d',' -f2 | cut -d'=' -f2 )
+  R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
 
+  JOBID=$(qsub \
+  -o ${OD} \
+  -W depend=afterok:${INDEL_PID} \
+  -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
+  ${WD}/run.pbs)
+  echo "qsub jobid is ${JOBID}"
+done < ${WD}/assumptions.txt
 
-## PRINTS DURATION OF SCRIPT
-echo "$((${SECONDS} / 3600)) hours, $(((${SECONDS} / 60) % 60)) minutes and $((${SECONDS} % 60)) seconds elapsed" >> ${LOG}
-echo [$(date)] "COMPLETED PIPELINE for: ${NAME}" >> ${LOG}
-echo "===========================================================" >> ${LOG}
+qsub -o ${OD} -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
+  ${WD}/run.pbs
 
+echo "===========================================================" 
+echo "[Delete and tidy files]"
+
+echo "===========================================================" 
+echo [$(date)] "ALL JOBS LAUNCHED for: ${NAME}" 
+echo "Make sure to check pipeline_log.txt which has a record of"
+echo "this command line output. Check the qsub logs before using"
+echo "results in case the script terminated unexpectedly."
+echo "===========================================================" 
+
+qstat -u ${USER}
+
+} | tee -a ${LOG}
 

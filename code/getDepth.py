@@ -76,7 +76,7 @@ def modeOfModes(depths):
     modes = []
     for d in depths:
         modes += mode(d)
-    return mode(modes)
+    return max(mode(modes))
 
 
 def maxMode(depths):
@@ -84,7 +84,7 @@ def maxMode(depths):
     for d in depths:
         maxes.append(max(d))
     
-    return mode(maxes)
+    return max(mode(maxes))
     
 def maxMedian(depths):
     maxes = []
