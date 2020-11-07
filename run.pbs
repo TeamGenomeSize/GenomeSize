@@ -31,17 +31,10 @@ PILEUP=${OD}/${NAME}_pileup.out
 ## GENOME SIZE ##
 #################
 
-echo "===========================================================" 
-echo "about to run genomeSize.py"
-echo "OD=${OD}"
-echo "NAME=${NAME}"
-echo "PILEUP=${PILEUP}"
-echo "VOLUME=${VOLUME}"
-echo "METHOD=${METHOD}"
-echo "INDEL=${INDEL}"
-echo "R_CLIPPING=${R_CLIPPING}"
-echo "===========================================================" 
+echo "[Executing run.pbs]"
+
+JOB_ID=$( echo ${PBS_JOBID} | cut -d'.' -f1 )
 
 # taking outputs and giving an answer
 python3 genomeSize.py -od ${OD} -n ${NAME} -p ${PILEUP} -v ${VOLUME} \
--m ${METHOD} -i ${INDEL} -rc ${R_CLIPPING} -fl=${FILTER_LEN}
+-m ${METHOD} -i ${INDEL} -rc ${R_CLIPPING} -fl ${FILTER_LEN} -pid ${JOB_ID}

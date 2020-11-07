@@ -6,6 +6,7 @@ import csv
 from pathlib import Path
 
 samtools_view_output = sys.argv[1]
+# print(samtools_view_output)
 
 f = open(samtools_view_output, "r")
 
@@ -64,18 +65,12 @@ for line in f:
 #print(counter_dict)
 
 indel_dict = {"indel_regions" : 0, "indel_bases" : 0}
-indel_dict["indel_regions"] = (counter_dict["total_matched_regions"] + counter_dict["total_insertion_regions"])/(counter_dict["total_matched_regions"] + counter_dict["total_deletion_regions"])
-indel_dict["indel_bases"] = (counter_dict["total_matched_bases"] + counter_dict["total_inserted_bases"])/(counter_dict["total_matched_bases"]+counter_dict["total_deleted_bases"])
-#print(indel_dict)
+indel_dict["indel_regions"] = (counter_dict["total_matched_regions"] + counter_dict["total_insertion_regions"])/(1 + counter_dict["total_matched_regions"] + counter_dict["total_deletion_regions"])
+indel_dict["indel_bases"] = (counter_dict["total_matched_bases"] + counter_dict["total_inserted_bases"])/(1 + counter_dict["total_matched_bases"]+counter_dict["total_deleted_bases"])
 #print(indel_dict["indel_regions"])
 
 # indel ratio
-indel_ratio = samtools_view_output.replace(".sam", "_indel_bias.txt")
-log = Path(indel_ratio)
-if not log.is_file():
-    with open(indel_ratio, 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(indel_dict["indel_bases"])
+print(indel_dict["indel_bases"])
 
 
 

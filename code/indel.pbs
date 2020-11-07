@@ -3,10 +3,11 @@
 #PBS -l walltime=11:00:00
 #PBS -j oe
 
+echo "[Executing indel.pbs]"
 
 module load samtools/1.10
 
-samtools view -@ ${THREADS} ${BAM} > ${OD}/${NAME}.sam
-python3 ${WD}/code/indel_bias.py ${OD}/${NAME}.sam
-rm ${OD}/${NAME}.sam
+# samtools view -@ ${THREADS} ${BAM} > ${OD}/${NAME}.sam
+python3 ${WD}/code/indel_bias.py ${OD}/${NAME}.sam > ${OD}/${NAME}_indel_bias.txt
+# rm ${OD}/${NAME}.sam
 

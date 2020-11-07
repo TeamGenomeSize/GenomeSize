@@ -1,12 +1,1 @@
 method=mmDepth,indel=true,r_clipping=true
-method=mmDepth,indel=true,r_clipping=false
-method=mmDepth,indel=false,r_clipping=true
-method=mmDepth,indel=false,r_clipping=false
-method=maxDepth,indel=true,r_clipping=true
-method=maxDepth,indel=true,r_clipping=false
-method=maxDepth,indel=false,r_clipping=true
-method=maxDepth,indel=false,r_clipping=false
-method=maxMedDepth,indel=true,r_clipping=true
-method=maxMedDepth,indel=true,r_clipping=false
-method=maxMedDepth,indel=false,r_clipping=true
-method=maxMedDepth,indel=false,r_clipping=false

@@ -6,51 +6,50 @@
 	# you may exit the shell when following is printed to the terminal:
 	# "Completed error checking inputs, pipeline will complete in background"
 # run with:
-# mkdir -p ${od}; ./main.sh -od ${od} -nm ${name} -wd ${wd} -b ${bam} -sco ${sco} -t ${threads} &
-# disown -h %1
+# rm -r ${OD}; mkdir ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
 # CHELSEA
-# name=e_coli
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
-# wd=$(pwd)
-# threads=2
+# NAME=e_coli
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
+# WD=$(pwd)
+# THREADS=2
 
-# name=s_cerevisiae
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv
-# wd=$(pwd)
-# threads=2
+# NAME=s_cerevisiae
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv
+# WD=$(pwd)
+# THREADS=2
 
-# name=c_elegans
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/bam/c_elegans.bam
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/busco3/run_c_elegans/full_table_c_elegans.tsv
-# wd=$(pwd)
-# threads=4
+# NAME=c_elegans
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/bam/c_elegans.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/busco3/run_c_elegans/full_table_c_elegans.tsv
+# WD=$(pwd)
+# THREADS=4
 
-# name=m_musculus
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/bam/m_musculus.bam
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/busco3/run_m_musculus/full_table_m_musculus.tsv
-# wd=$(pwd)
-# threads=4
+# NAME=m_musculus
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/bam/m_musculus.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/busco3/run_m_musculus/full_table_m_musculus.tsv
+# WD=$(pwd)
+# THREADS=4
 
-# name=d_melanogaster
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/bam/d_melanogaster.bam
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/busco3/run_d_melanogaster/full_table_d_melanogaster.tsv
-# wd=$(pwd)
-# threads=4
+# NAME=d_melanogaster
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/bam/d_melanogaster.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/busco3/run_d_melanogaster/full_table_d_melanogaster.tsv
+# WD=$(pwd)
+# THREADS=4
 
-# name=a_thaliana
-# od=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana
-# bam=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam
-# sco=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/busco3/run_a_thaliana/full_table_a_thaliana.tsv
-# wd=$(pwd)
-# threads=4
+# NAME=a_thaliana
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana_1
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/busco3/run_a_thaliana/full_table_a_thaliana.tsv
+# WD=$(pwd)
+# THREADS=4
 
 
 
@@ -184,11 +183,8 @@ else
   exit 1
 fi
 
-
 LOG=${OD}/pipeline_log.txt
 touch ${LOG}
-
-# exec 3>&1 1>>${LOG} 2>&1 	# handles printing of messages to log and terminal
 
 
 {
@@ -219,45 +215,42 @@ PRELIM_PROCESS_PID=$(qsub \
 ${WD}/code/run_samtools.pbs | cut -d'.' -f1)
 echo "PRELIM_PROCESS_PID is ${PRELIM_PROCESS_PID}"
 
+echo "[Compute indel ratio]"
+INDEL_PID=$(qsub \
+-o ${OD} \
+-W depend=afterok:${PRELIM_PROCESS_PID} \
+-l select=${THREADS}:ncpus=1:mem=4gb \
+-v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} \
+${WD}/code/indel.pbs | cut -d'.' -f1)
+# qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} ${WD}/code/indel.pbs
+echo "INDEL_PID is ${INDEL_PID}"
+
 echo "===========================================================" 
 
 echo "[Compute array of assumptions to try]"
-python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
+# python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
 
 echo "===========================================================" 
 
 echo "[Run run.pbs, launching parralel genome calculations]"
 while read ASSUMPTIONS; do
-  INDEL_PID=""
   METHOD=$( echo ${ASSUMPTIONS} | cut -d',' -f1 | cut -d'=' -f2 )
   INDEL=$( echo ${ASSUMPTIONS} | cut -d',' -f2 | cut -d'=' -f2 )
   R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
 
-  if [[ INDEL == 'true' ]]; then
-    echo "[Compute indel ratio]"
-    INDEL_PID=$(qsub \
-    -o ${OD} \
-    -W depend=afterok:${PRELIM_PROCESS_PID} \
-    -l select=${THREADS}:ncpus=1:mem=4gb \
-    -v bam=${BAM},wd=${WD},od=${OD},name=${NAME},threads=${THREADS} \
-    ${WD}/code/indel.pbs | cut -d'.' -f1)
-    # qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -l select=${THREADS}:ncpus=1:mem=4gb ${WD}/code/indel.pbs
-    echo "INDEL_PID is ${INDEL_PID}"
-    INDEL_PID=",${INDEL_PID}"
-  fi
-
   JOBID=$(qsub \
   -o ${OD} \
-  -W depend=afterok:${PRELIM_PROCESS_PID}${INDEL_PID} \
+  -W depend=afterok:${INDEL_PID} \
   -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
   ${WD}/run.pbs)
   echo "qsub jobid is ${JOBID}"
 done < ${WD}/assumptions.txt
 
+# qsub -o ${OD} -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
+#   ${WD}/run.pbs
+
 echo "===========================================================" 
 echo "[Delete and tidy files]"
-
-chmod -R 775 ${OD}
 
 echo "===========================================================" 
 echo [$(date)] "ALL JOBS LAUNCHED for: ${NAME}" 
@@ -265,5 +258,8 @@ echo "Make sure to check pipeline_log.txt which has a record of"
 echo "this command line output. Check the qsub logs before using"
 echo "results in case the script terminated unexpectedly."
 echo "===========================================================" 
+
+qstat -u ${USER}
+
 } | tee -a ${LOG}
 
