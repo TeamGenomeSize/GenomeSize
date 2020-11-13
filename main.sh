@@ -9,7 +9,7 @@
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
 # NAME=e_coli
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_1
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_3
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
 # WD=/home/$USER/GenomeSize
@@ -55,10 +55,7 @@
 
 
 # setting default flags
-CALC_SCO=false
-FILTER_LEN=5000
 THREADS=2
-
 
 ## LOGS AND ERRORS
 set -e						# if any error occurs, exit 1
@@ -108,7 +105,6 @@ else
       "-b"|"--bam"                      ) BAM="$1"; shift;;
       "-sco"|"--single_copy_orthologs"  ) SCO="$1"; shift;;
       "-rf"|"--reference_genome"        ) REF_GENOME="$1"; shift;;
-      "-fl"|"--filter_len"              ) FILTER_LEN="$1"; shift;;
       "-nm"|"--name"                    ) NAME="$1"; shift;;
       "-wd"|"--working_dir"             ) WD="$1"; shift;;
       "-t"|"--threads"                  ) THREADS="$1"; shift;;
@@ -188,12 +184,9 @@ fi
 LOG=${OD}/pipeline_log.txt
 touch ${LOG}
 
-# Loop multiple read filter lengths
-
-
-# for length in 
-
-{
+  
+# everything between the curly brackets gets printed to stdout and ${LOG} 
+{ 
 echo "===========================================================" 
 echo [$(date)] "PID: $$" 
 echo "===========================================================" 
@@ -207,52 +200,64 @@ echo "REF_GENOME = ${REF_GENOME}"
 
 echo "===========================================================" 
 
-# for each
-
-echo "[Compute all intermediary files]"
-PRELIM_PROCESS_PID=$(qsub \
--o ${OD} \
--l select=${THREADS}:ncpus=1:mem=4gb \
--v BAM=${BAM},WD=${WD},OD=${OD},SCO=${SCO},NAME=${NAME},THREADS=${THREADS},FILTER_LEN=${FILTER_LEN} \
-${WD}/code/run_samtools.pbs | cut -d'.' -f1)
-echo "PRELIM_PROCESS_PID is ${PRELIM_PROCESS_PID}"
-
-
-echo "[Compute indel ratio]"
-INDEL_PID=$(qsub \
--o ${OD} \
--W depend=afterok:${PRELIM_PROCESS_PID} \
--l select=${THREADS}:ncpus=1:mem=4gb \
--v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} \
-${WD}/code/indel.pbs | cut -d'.' -f1)
-# qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} ${WD}/code/indel.pbs
-echo "INDEL_PID is ${INDEL_PID}"
-
-echo "===========================================================" 
-
 echo "[Compute array of assumptions to try]"
 python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
 
 echo "===========================================================" 
 
-echo "[Run run.pbs, launching parralel genome calculations]"
-while read ASSUMPTIONS; do
-  METHOD=$( echo ${ASSUMPTIONS} | cut -d',' -f1 | cut -d'=' -f2 )
-  INDEL=$( echo ${ASSUMPTIONS} | cut -d',' -f2 | cut -d'=' -f2 )
-  R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
+} | tee -a ${LOG}
 
-  # specifying more than one is broken in qsub
-  JOBID=$(qsub \
+# Loop multiple read filter lengths
+# This will multiply the number assumptions tested by length of array
+FILTERS=('0' '1000' '5000')
+for FILTER_LEN in "${FILTERS[@]}"; do
+
+  {
+  echo "[Compute all intermediary files]"
+  PRELIM_PROCESS_PID=$(qsub \
   -o ${OD} \
-  -W depend=afterok:${INDEL_PID} \
-  -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
-  ${WD}/run.pbs | cut -d'.' -f1)
-  echo "qsub jobid is ${JOBID}"
-done < ${WD}/assumptions.txt
+  -l select=${THREADS}:ncpus=1:mem=4gb \
+  -v LOG=${LOG},BAM=${BAM},WD=${WD},OD=${OD},SCO=${SCO},NAME=${NAME},THREADS=${THREADS},FILTER_LEN=${FILTER_LEN} \
+  ${WD}/code/run_samtools.pbs | cut -d'.' -f1)
+  echo "PRELIM_PROCESS_PID is ${PRELIM_PROCESS_PID}"
 
-# qsub -o ${OD} -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
-  # ${WD}/run.pbs
+  echo "===========================================================" 
 
+  echo "[Compute indel ratio]"
+  INDEL_PID=$(qsub \
+  -o ${OD} \
+  -W depend=afterok:${PRELIM_PROCESS_PID} \
+  -l select=${THREADS}:ncpus=1:mem=4gb \
+  -v LOG=${LOG},BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS},FILTER_LEN=${FILTER_LEN} \
+  ${WD}/code/indel.pbs | cut -d'.' -f1)
+  # qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} ${WD}/code/indel.pbs
+  echo "INDEL_PID is ${INDEL_PID}"
+
+  echo "===========================================================" 
+
+  echo "[Run run.pbs, launching parralel genome calculations]"
+  while read ASSUMPTIONS; do
+    METHOD=$( echo ${ASSUMPTIONS} | cut -d',' -f1 | cut -d'=' -f2 )
+    INDEL=$( echo ${ASSUMPTIONS} | cut -d',' -f2 | cut -d'=' -f2 )
+    R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
+
+    # specifying more than one is broken in qsub
+    JOBID=$(qsub \
+    -o ${OD} \
+    -W depend=afterok:${INDEL_PID} \
+    -v LOG=${LOG},WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
+    ${WD}/run.pbs | cut -d'.' -f1)
+    echo "qsub jobid is ${JOBID}"
+  done < ${WD}/assumptions.txt
+
+  # qsub -o ${OD} -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
+    # ${WD}/run.pbs
+
+  } | tee -a ${LOG}
+
+done
+
+{
 echo "===========================================================" 
 echo "[Delete and tidy files]"
 
@@ -271,4 +276,3 @@ echo "==========================================================="
 qstat -u ${USER}
 
 } | tee -a ${LOG}
-

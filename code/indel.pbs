@@ -4,34 +4,34 @@
 #PBS -l walltime=11:00:00
 #PBS -j oe
 
-echo "[Executing indel.pbs]"
+echo "===========================================================" >> ${LOG}
+echo "[Executing indel.pbs]"  >> ${LOG}
 
 START_TIME=$( date +"%T" )					# records time taken by whole pipeline
 START=$( date -u -d "${START_TIME}" +"%s" )
 
 module load samtools/1.10
 
-# script does not need to be executed
-if [[ -s ${OD}/${NAME}_indel_bias.txt ]]; then
-    exit 0
+if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt ]]; then
+    
+  if [[ -s ${OD}/${NAME}_${FILTER_LEN}.sam ]]; then
+      python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
+  else
+      samtools view -@ ${THREADS} ${OD}/${NAME}_${FILTER_LEN}.bam > ${OD}/${NAME}_${FILTER_LEN}.sam
+      python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
+  fi
+
+  rm ${OD}/${NAME}_${FILTER_LEN}.sam
+  rm ${OD}/${NAME}_${FILTER_LEN}.bam
+  rm ${OD}/${NAME}_${FILTER_LEN}.bam.bai
+
 fi
 
-if [[ -s ${OD}/${NAME}.sam ]]; then
-    python3 ${WD}/code/indel_bias.py ${OD}/${NAME}.sam > ${OD}/${NAME}_indel_bias.txt
-    rm ${OD}/${NAME}.sam
-else
-    samtools view -@ ${THREADS} ${BAM} > ${OD}/${NAME}.sam
-    python3 ${WD}/code/indel_bias.py ${OD}/${NAME}.sam > ${OD}/${NAME}_indel_bias.txt
-    rm ${OD}/${NAME}.sam
-fi
 
 FINAL_TIME=$( date +"%T" )
 FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
 
-echo "===========================================================" >> ${LOG}
 echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
+echo "[Finished executing indel.pbs]"  >> ${LOG}
 echo "===========================================================" >> ${LOG}
-echo "===========================================================" >> ${LOG}
-
-echo "[Finished executing indel.pbs]"
 

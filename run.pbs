@@ -24,14 +24,14 @@ cd ${WD}
 ##################
 ## EXPAND FLAGS ##
 ##################
-VOLUME=${OD}/${NAME}_read_volume.txt
-PILEUP=${OD}/${NAME}_pileup.out
+VOLUME=${OD}/${NAME}_${FILTER_LEN}_read_volume.txt
+PILEUP=${OD}/${NAME}_${FILTER_LEN}_pileup.out
 
 #################
 ## GENOME SIZE ##
 #################
-
-echo "[Executing run.pbs]"
+echo "===========================================================" >> ${LOG}
+echo "[Executing run.pbs]" >> ${LOG}
 
 START_TIME=$( date +"%T" )					# records time taken by whole pipeline
 START=$( date -u -d "${START_TIME}" +"%s" )
@@ -45,9 +45,7 @@ python3 genomeSize.py -od ${OD} -n ${NAME} -p ${PILEUP} -v ${VOLUME} \
 FINAL_TIME=$( date +"%T" )
 FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
 
-echo "===========================================================" >> ${LOG}
 echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
-echo "===========================================================" >> ${LOG}
-echo "===========================================================" >> ${LOG}
 
-echo "[Finished executing run.pbs]"
+echo "[Finished executing run.pbs]" >> ${LOG}
+echo "===========================================================" >> ${LOG}

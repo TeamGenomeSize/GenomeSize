@@ -6,7 +6,8 @@
 set -e						# if any error occurs, exit 1
 
 cd ${WD}
-echo "[Executing run_samtools.pbs]"
+echo "===========================================================" >> ${LOG}
+echo "[Executing run_samtools.pbs]" >> ${LOG}
 
 START_TIME=$( date +"%T" )					# records time taken by whole pipeline
 START=$( date -u -d "${START_TIME}" +"%s" )
@@ -20,8 +21,8 @@ module load samtools/1.10
 ##################
 ## EXPAND FLAGS ##
 ##################
-VOLUME=${OD}/${NAME}_read_volume.txt
-PILEUP=${OD}/${NAME}_pileup.out
+VOLUME=${OD}/${NAME}_${FILTER_LEN}_read_volume.txt
+PILEUP=${OD}/${NAME}_${FILTER_LEN}_pileup.out
 SORTED_BED=${OD}/${NAME}_sorted.bed
 
 
@@ -32,12 +33,7 @@ SORTED_BED=${OD}/${NAME}_sorted.bed
 # if volume file already exists skip computation
 if [[ ! -s ${VOLUME} ]]; then
     # calculate samtools stats to get one volume value
-    if [[ -z "${FILTER_LEN}" ]]
-    then
-        samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk '{total+=$1*$2} END{print total}' > ${VOLUME}
-    else
-        samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk -v min="${FILTER_LEN}" '{if($1 >= min) total+=$1*$2 } END{print total}' > ${VOLUME}
-    fi
+    samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk -v min="${FILTER_LEN}" '{if($1 >= min) total+=$1*$2 } END{print total}' > ${VOLUME}
 fi
 
 
@@ -52,30 +48,26 @@ if [[ ! -s ${SORTED_BED} ]]; then
     sort -n -k 2 ${OD}/${NAME}.bed > ${SORTED_BED}
 fi
 
-if [[ ! -s ${OD}/${NAME}.bam ]]; then
-    # samtools view to filter shorter reads
-    samtools view -h ${BAM} | awk -v filt="${FILTER_LEN}" 'length($10) > filt || $1 ~ /^@/' | samtools view -bS - > ${OD}/${NAME}.filtered.bam
-    mv ${OD}/${NAME}.filtered.bam ${OD}/${NAME}.bam
+if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}.bam ]]; then
+    # samtools view to filter shorter reads and create BAM
+    samtools view -h ${BAM} | awk -v filt="${FILTER_LEN}" 'length($10) > filt || $1 ~ /^@/' | samtools view -bS - > ${OD}/${NAME}_${FILTER_LEN}.bam
 fi
 
-if [[ ! -s ${OD}/${NAME}.bam.bai ]]; then
-    # sort in order
-    samtools sort -@ ${THREADS} -o ${OD}/${NAME}.sort.bam ${OD}/${NAME}.bam
-    samtools index -@ ${THREADS} -b ${OD}/${NAME}.sort.bam
-    cp ${OD}/${NAME}.sort.bam.bai ${OD}/${NAME}.bam.bai
+if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}.bam.bai ]]; then
+    # sort in order and create index
+    samtools sort -@ ${THREADS} -o ${OD}/${NAME}_${FILTER_LEN}.sort.bam ${OD}/${NAME}_${FILTER_LEN}.bam
+    samtools index -@ ${THREADS} -b ${OD}/${NAME}_${FILTER_LEN}.sort.bam
+    mv ${OD}/${NAME}_${FILTER_LEN}.sort.bam.bai ${OD}/${NAME}_${FILTER_LEN}.bam.bai
+    mv ${OD}/${NAME}_${FILTER_LEN}.sort.bam ${OD}/${NAME}_${FILTER_LEN}.bam
 fi
 
 if [[ ! -s ${PILEUP} ]]; then
-    samtools mpileup -BQ0 -l ${OD}/${NAME}_sorted.bed ${OD}/${NAME}.bam > ${PILEUP}
+    samtools mpileup -BQ0 -l ${SORTED_BED} ${OD}/${NAME}_${FILTER_LEN}.bam > ${PILEUP}
 fi
 
 FINAL_TIME=$( date +"%T" )
 FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
-
-echo "===========================================================" >> ${LOG}
 echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
-echo "===========================================================" >> ${LOG}
-echo "===========================================================" >> ${LOG}
 
-
-echo "[Finished executing run_samtools.pbs]"
+echo "[Finished executing run_samtools.pbs]" >> ${LOG}
+echo "===========================================================" >> ${LOG}

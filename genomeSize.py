@@ -45,7 +45,6 @@ args = parser.parse_args()
 
 def main ():
     
-
     # 1) get read volume
     volume = readVolume(args.volume_path)
 
