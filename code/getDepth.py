@@ -40,16 +40,16 @@ def readPileup(pileupFile, outFile):
     depths = []                 # list of lists, each list is depths of one sco
     all_depths = []             # read depths of all sco base positions in one list
     mode_depths = []            # mode of each sco in one list
-    median_depths = []          # median depth of each sco in one list
+    # median_depths = []          # median depth of each sco in one list
     
-    # same as above but only bases that match the majority of the reads
-    depths_m = []                 
-    all_depths_m = []             
-    mode_depths_m = []            
-    median_depths_m = []
+    # # same as above but only bases that match the majority of the reads
+    # depths_m = []                 
+    # all_depths_m = []             
+    # mode_depths_m = []            
+    # median_depths_m = []
     
     curr_gene = []
-    curr_gene_m = []
+    # curr_gene_m = []
     
     index = 0
     
@@ -63,24 +63,24 @@ def readPileup(pileupFile, outFile):
         if int(vals[1]) != index + 1 and index != 0:
             # add to list of all depths
             all_depths += curr_gene
-            all_depths_m += curr_gene_m
+            # all_depths_m += curr_gene_m
             
             # add to list of modes
             mode_depths.append(max(mode(curr_gene)))
-            mode_depths_m.append(max(mode(curr_gene_m)))
+            # mode_depths_m.append(max(mode(curr_gene_m)))
             
-            # add to list of medians
-            median_depths.append(sorted(curr_gene)[math.floor(len(curr_gene)/2)])
-            median_depths_m.append(sorted(curr_gene_m)[math.floor(len(curr_gene_m)/2)])
+            # # add to list of medians
+            # median_depths.append(sorted(curr_gene)[math.floor(len(curr_gene)/2)])
+            # median_depths_m.append(sorted(curr_gene_m)[math.floor(len(curr_gene_m)/2)])
             
             depths.append(curr_gene)
             curr_gene = []
-            curr_gene_m = []
+            # curr_gene_m = []
                 
         curr_gene.append(int(vals[3]))
         
-        matches = count_match(vals[5])
-        curr_gene_m.append(matches)
+        # matches = count_match(vals[5])
+        # curr_gene_m.append(matches)
         
         index = int(vals[1])
     
@@ -89,13 +89,13 @@ def readPileup(pileupFile, outFile):
     final = {}
     
     final["modeOfModes"] = max(mode(mode_depths))
-    final["modeOfModesM"] = max(mode(mode_depths_m))
+    # final["modeOfModesM"] = max(mode(mode_depths_m))
     
-    final["medOfMeds"] = sorted(median_depths)[math.floor(len(median_depths)/2)]
-    final["medOfMedsM"] = sorted(median_depths)[math.floor(len(median_depths_m)/2)]
+    # final["medOfMeds"] = sorted(median_depths)[math.floor(len(median_depths)/2)]
+    # final["medOfMedsM"] = sorted(median_depths)[math.floor(len(median_depths_m)/2)]
     
     final["mode"] = max(mode(all_depths))
-    final["modeM"] = max(mode(all_depths_m))
+    # final["modeM"] = max(mode(all_depths_m))
     
     depthFile = open("{}/depths.out".format(outdir), "w+")        # need to rename file
     for key in final:
