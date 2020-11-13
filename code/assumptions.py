@@ -7,9 +7,10 @@ import sys
     # insertion deletion (bool)
     # read clipping (bool)
 
-methods = ['mmDepth', 'maxDepth', 'maxMedDepth']
+methods = ['maxDepth', 'maxMedDepth', 'mmDepth']
 indel = ['true', 'false']
 r_clipping = ['true', 'false']
+# volume = ['0', '1000', '5000', '10000']
 
 
 f = open(sys.argv[1], 'w')

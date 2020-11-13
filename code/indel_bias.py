@@ -57,12 +57,15 @@ for line in f:
 #print(counter_dict)
 
 indel_ratio_dict = {"indel_regions" : 0, "indel_bases" : 0}
-indel_ratio_dict["indel_regions"] = (counter_dict["total_matched_regions"] + counter_dict["total_insertion_regions"])/(1 + counter_dict["total_matched_regions"] + counter_dict["total_deletion_regions"])
-indel_ratio_dict["indel_bases"] = (counter_dict["total_matched_bases"] + counter_dict["total_inserted_bases"])/(1 + counter_dict["total_matched_bases"]+counter_dict["total_deleted_bases"])
+# indel_ratio_dict["indel_regions"] = (counter_dict["total_matched_regions"] + counter_dict["total_insertion_regions"])/(counter_dict["total_matched_regions"] + counter_dict["total_deletion_regions"])
+indel_ratio_dict["indel_bases"] = (counter_dict["total_matched_bases"] + counter_dict["total_inserted_bases"])/(counter_dict["total_matched_bases"]+counter_dict["total_deleted_bases"])
 #print(indel_dict["indel_regions"])
 
 # indel ratio
-print(indel_dict["indel_bases"])
+if indel_ratio_dict["indel_bases"] == 0:
+    print("Error: ratio is 0")
+else:
+    print(indel_ratio_dict["indel_bases"])
 
 
 

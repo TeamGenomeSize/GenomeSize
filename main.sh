@@ -6,50 +6,50 @@
 	# you may exit the shell when following is printed to the terminal:
 	# "Completed error checking inputs, pipeline will complete in background"
 # run with:
-# rm -r ${OD}; mkdir ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
+# mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
-# CHELSEA
 # NAME=e_coli
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_1
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
-# WD=$(pwd)
+# WD=/home/$USER/GenomeSize
 # THREADS=2
-
+# mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=s_cerevisiae
 # OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv
-# WD=$(pwd)
+# WD=/home/$USER/GenomeSize
 # THREADS=2
-
+# mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=c_elegans
 # OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/bam/c_elegans.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/busco3/run_c_elegans/full_table_c_elegans.tsv
-# WD=$(pwd)
+# WD=/home/$USER/GenomeSize
 # THREADS=4
-
+# mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=m_musculus
 # OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/bam/m_musculus.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/busco3/run_m_musculus/full_table_m_musculus.tsv
-# WD=$(pwd)
+# WD=/home/$USER/GenomeSize
 # THREADS=4
-
+# mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=d_melanogaster
 # OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/bam/d_melanogaster.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/busco3/run_d_melanogaster/full_table_d_melanogaster.tsv
-# WD=$(pwd)
+# WD=/home/$USER/GenomeSize
 # THREADS=4
-
+# mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=a_thaliana
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana_1
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/busco3/run_a_thaliana/full_table_a_thaliana.tsv
-# WD=$(pwd)
+# WD=/home/$USER/GenomeSize
 # THREADS=4
+# mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
 
 
@@ -62,6 +62,8 @@ THREADS=2
 
 ## LOGS AND ERRORS
 set -e						# if any error occurs, exit 1
+START_TIME=$( date +"%T" )					# records time taken by whole pipeline
+START=$( date -u -d "${START_TIME}" +"%s" )
 
 
 ###############
@@ -186,6 +188,10 @@ fi
 LOG=${OD}/pipeline_log.txt
 touch ${LOG}
 
+# Loop multiple read filter lengths
+
+
+# for length in 
 
 {
 echo "===========================================================" 
@@ -201,19 +207,16 @@ echo "REF_GENOME = ${REF_GENOME}"
 
 echo "===========================================================" 
 
-# Running BUSCO or MMSeq2 would happen up here (Epic Story 4)
-# TODO
-
-
-echo "===========================================================" 
+# for each
 
 echo "[Compute all intermediary files]"
 PRELIM_PROCESS_PID=$(qsub \
 -o ${OD} \
 -l select=${THREADS}:ncpus=1:mem=4gb \
--v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},threads=${THREADS},filter_len=${FILTER_LEN} \
+-v BAM=${BAM},WD=${WD},OD=${OD},SCO=${SCO},NAME=${NAME},THREADS=${THREADS},FILTER_LEN=${FILTER_LEN} \
 ${WD}/code/run_samtools.pbs | cut -d'.' -f1)
 echo "PRELIM_PROCESS_PID is ${PRELIM_PROCESS_PID}"
+
 
 echo "[Compute indel ratio]"
 INDEL_PID=$(qsub \
@@ -222,13 +225,13 @@ INDEL_PID=$(qsub \
 -l select=${THREADS}:ncpus=1:mem=4gb \
 -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} \
 ${WD}/code/indel.pbs | cut -d'.' -f1)
-#qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} ${WD}/code/indel.pbs
+# qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} ${WD}/code/indel.pbs
 echo "INDEL_PID is ${INDEL_PID}"
 
 echo "===========================================================" 
 
 echo "[Compute array of assumptions to try]"
-# python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
+python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
 
 echo "===========================================================" 
 
@@ -238,19 +241,25 @@ while read ASSUMPTIONS; do
   INDEL=$( echo ${ASSUMPTIONS} | cut -d',' -f2 | cut -d'=' -f2 )
   R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
 
+  # specifying more than one is broken in qsub
   JOBID=$(qsub \
   -o ${OD} \
   -W depend=afterok:${INDEL_PID} \
   -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
-  ${WD}/run.pbs)
+  ${WD}/run.pbs | cut -d'.' -f1)
   echo "qsub jobid is ${JOBID}"
 done < ${WD}/assumptions.txt
 
-qsub -o ${OD} -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
-  ${WD}/run.pbs
+# qsub -o ${OD} -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
+  # ${WD}/run.pbs
 
 echo "===========================================================" 
 echo "[Delete and tidy files]"
+
+qsub -o ${OD} \
+-W depend=afterok:${JOBID} \
+-v OD=${OD},NAME=${NAME},LOG=${LOG},START=${START} \
+${WD}/code/tidy.pbs
 
 echo "===========================================================" 
 echo [$(date)] "ALL JOBS LAUNCHED for: ${NAME}" 

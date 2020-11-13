@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#PBS -N tidy.pbs
+#PBS -l walltime=00:10:00
+#PBS -j oe
+
+echo "[Executing tidy.pbs]"
+
+chmod -R 775 ${OD}/
+
+FINAL_TIME=$( date +"%T" )
+FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
+
+echo "===========================================================" >> ${LOG}
+echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
+echo "===========================================================" >> ${LOG}
+echo "===========================================================" >> ${LOG}
+
+echo "[Finished executing tidy.pbs]"

@@ -73,7 +73,7 @@ def createLog():
     if not log.is_file():
         with open(args.od + "/" + args.name + "_genomeSize_log.csv", 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["PID","Method", "Filter", "Indel On", "Indel Bias" "Read Clipping On", "Volume", "Depth", "Genome Size"])
+            writer.writerow(["PID","Method", "Filter", "Indel On", "Indel Bias" ,"Read Clipping On", "Volume", "Depth", "Genome Size"])
 
 def generateLog(vol, depth, gs, indel_bias):
     with open(args.od + "/" + args.name + "_genomeSize_log.csv", 'a+', newline='') as file:
