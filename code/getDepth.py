@@ -25,6 +25,9 @@ def usageExample():
 
     f.close()
 
+
+# returns a dictionary with method as the key
+# and value is the read depth
 def getDepth(method: str, depths: list):
     
     if method == 'mmDepth':
@@ -43,7 +46,11 @@ def getDepth(method: str, depths: list):
 # Generates read depth from a pileup file
 def readPileup(pileupFile):
     f = open(pileupFile, "r")
-    depths = []
+    
+    depths = []                 # list of lists, each list is depths of one sco
+    all_depths = []             # read depths of all sco base positions in one list
+    mode_depths = []            # mode of each sco in one list
+    median_depths = []          # median depth of each sco in one list
     
     curr_gene = []
     index = 0
@@ -51,7 +58,10 @@ def readPileup(pileupFile):
     for line in f:
         # vals[1] = index
         # vals[3] = depth at given base
+        # vals[5]
         vals = line.split()
+        
+        # moving on to next sco
         if int(vals[1]) != index + 1 and index != 0:
             depths.append(curr_gene)
             curr_gene = []
