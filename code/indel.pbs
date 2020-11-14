@@ -21,7 +21,7 @@ if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt ]]; then
       python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
   fi
 
-  rm ${OD}/${NAME}_${FILTER_LEN}.sam
+  # rm ${OD}/${NAME}_${FILTER_LEN}.sam
   rm ${OD}/${NAME}_${FILTER_LEN}.bam
   rm ${OD}/${NAME}_${FILTER_LEN}.bam.bai
 
