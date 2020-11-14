@@ -97,7 +97,7 @@ def readPileup(pileupFile, outFile):
     final["mode"] = max(mode(all_depths))
     # final["modeM"] = max(mode(all_depths_m))
     
-    depthFile = open("{}/depths.out".format(outdir), "w+")        # need to rename file
+    depthFile = open(outFile, "w+")        # need to rename file
     for key in final:
         depthFile.write(key + " " + final[key] + "\r\n")
     depthFile.close()
