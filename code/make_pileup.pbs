@@ -2,21 +2,27 @@
 
 #PBS -l select=1:ncpus=1:mem=4gb
 #PBS -l walltime=1:00:00
-#PBS -M z5207331@unsw.edu.au
+#PBS -M $USER@unsw.edu.au
 #PBS -m ae
 #PBS -j oe
-#PBS -o /home/z5207331/GenomeSize/make_pileup_log
+#PBS -o /home/z5207315/GenomeSize/make_pileup_log
 
-cd /home/z5207331/GenomeSize
+cd /home/$USER/GenomeSize
 
-# egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
-# cut -f3,4,5 | \
-# sed -e 's/\t/ /g' > /home/z5207331/GenomeSize/e_coli_ss.bed
+egrep -v "^#" /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv | \
+cut -f3,4,5 | \
+sed -e 's/\t/ /g' > /home/$USER/GenomeSize/e_coli_ss.bed
 
 module load samtools
 
+# samtools sort /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam -o /srv/scratch/$USER/e_coli.bam
+# samtools index -b /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam > /srv/scratch/$USER/e_coli.bam.bai
+
+# samtools sort /srv/scratch/$USER/e_coli.bam /srv/scratch/$USER/e_coli.sort
+# samtools index -b /srv/scratch/$USER/e_coli.sort.bam
+
 source venv/bin/activate
 
-python3 code/make_pileup.py
+python3 /home/$USER/GenomeSize/code/make_pileup.py
 
 deactivate

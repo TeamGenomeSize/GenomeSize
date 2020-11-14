@@ -1,0 +1,73 @@
+#!/bin/bash
+#PBS -N run_samtools.sh
+#PBS -l walltime=11:59:00
+#PBS -j oe
+
+set -e						# if any error occurs, exit 1
+
+cd ${WD}
+echo "===========================================================" >> ${LOG}
+echo "[Executing run_samtools.pbs]" >> ${LOG}
+
+START_TIME=$( date +"%T" )					# records time taken by whole pipeline
+START=$( date -u -d "${START_TIME}" +"%s" )
+
+##################
+## LOAD MODULES ##
+##################
+module load samtools/1.10
+
+
+##################
+## EXPAND FLAGS ##
+##################
+VOLUME=${OD}/${NAME}_${FILTER_LEN}_read_volume.txt
+PILEUP=${OD}/${NAME}_${FILTER_LEN}_pileup.out
+SORTED_BED=${OD}/${NAME}_sorted.bed
+
+
+#################
+## READ VOLUME ##
+#################
+
+# if volume file already exists skip computation
+if [[ ! -s ${VOLUME} ]]; then
+    # calculate samtools stats to get one volume value
+    samtools stats -@ ${THREADS} ${BAM} | grep ^RL | cut -f 2- | awk -v min="${FILTER_LEN}" '{if($1 >= min) total+=$1*$2 } END{print total}' > ${VOLUME}
+fi
+
+
+##################
+## READ PILEUPS ##
+##################
+
+if [[ ! -s ${SORTED_BED} ]]; then
+    # get bed file
+    egrep -v "^#" ${SCO} | cut -f3,4,5 | sed -e 's/\t/ /g' | egrep -v '^$' > ${OD}/${NAME}.bed
+    # create sorted bam file
+    sort -n -k 2 ${OD}/${NAME}.bed > ${SORTED_BED}
+fi
+
+if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}.bam ]]; then
+    # samtools view to filter shorter reads and create BAM
+    samtools view -h ${BAM} | awk -v filt="${FILTER_LEN}" 'length($10) > filt || $1 ~ /^@/' | samtools view -bS - > ${OD}/${NAME}_${FILTER_LEN}.bam
+fi
+
+if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}.bam.bai ]]; then
+    # sort in order and create index
+    samtools sort -@ ${THREADS} -o ${OD}/${NAME}_${FILTER_LEN}.sort.bam ${OD}/${NAME}_${FILTER_LEN}.bam
+    samtools index -@ ${THREADS} -b ${OD}/${NAME}_${FILTER_LEN}.sort.bam
+    mv ${OD}/${NAME}_${FILTER_LEN}.sort.bam.bai ${OD}/${NAME}_${FILTER_LEN}.bam.bai
+    mv ${OD}/${NAME}_${FILTER_LEN}.sort.bam ${OD}/${NAME}_${FILTER_LEN}.bam
+fi
+
+if [[ ! -s ${PILEUP} ]]; then
+    samtools mpileup -BQ0 -l ${SORTED_BED} ${OD}/${NAME}_${FILTER_LEN}.bam > ${PILEUP}
+fi
+
+FINAL_TIME=$( date +"%T" )
+FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
+echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
+
+echo "[Finished executing run_samtools.pbs]" >> ${LOG}
+echo "===========================================================" >> ${LOG}

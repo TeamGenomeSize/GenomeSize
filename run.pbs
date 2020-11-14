@@ -1,0 +1,51 @@
+#!/bin/bash
+#PBS -N run.pbs
+#PBS -l mem=16gb
+#PBS -l walltime=5:59:00
+#PBS -j oe
+
+set -e						# if any error occurs, exit 1
+
+
+# BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/bam/${NAME}.bam
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/chelsea_test
+# FILTER_LEN=5000
+# SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/${NAME}/busco3/run_${NAME}/full_table_${NAME}.tsv
+# WD=$(pwd)
+# NAME=${NAME}
+# threads=2
+
+#########
+# test runs
+# qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},\
+#  filter_len=${FILTER_LEN},assumptions=${ASSUMPTIONS} run.pbs
+cd ${WD}
+
+##################
+## EXPAND FLAGS ##
+##################
+VOLUME=${OD}/${NAME}_${FILTER_LEN}_read_volume.txt
+PILEUP=${OD}/${NAME}_${FILTER_LEN}_pileup.out
+
+#################
+## GENOME SIZE ##
+#################
+echo "===========================================================" >> ${LOG}
+echo "[Executing run.pbs]" >> ${LOG}
+
+START_TIME=$( date +"%T" )					# records time taken by whole pipeline
+START=$( date -u -d "${START_TIME}" +"%s" )
+
+JOB_ID=$( echo ${PBS_JOBID} | cut -d'.' -f1 )
+
+# taking outputs and giving an answer
+python3 genomeSize.py -od ${OD} -n ${NAME} -p ${PILEUP} -v ${VOLUME} \
+-m ${METHOD} -i ${INDEL} -rc ${R_CLIPPING} -fl ${FILTER_LEN} -pid ${JOB_ID}
+
+FINAL_TIME=$( date +"%T" )
+FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
+
+echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
+
+echo "[Finished executing run.pbs]" >> ${LOG}
+echo "===========================================================" >> ${LOG}
