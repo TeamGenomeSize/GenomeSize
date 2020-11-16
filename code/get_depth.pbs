@@ -8,4 +8,4 @@
 
 cd /home/$USER/GenomeSize
 
-python3 /home/$USER/GenomeSize/code/getDepth.py testing2
+python3 /home/$USER/GenomeSize/code/getDepth.py testing4
