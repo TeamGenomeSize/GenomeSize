@@ -35,7 +35,6 @@ def getDepth(method: str, depths: list):
 # Output: A list a lists [sco] where sco = [read depth of bases]
 # Generates read depth from a pileup file
 def readPileup(pileupFile, outFile):
-    f = open(pileupFile, "r")
     
     depths = []                 # list of lists, each list is depths of one sco
     all_depths = []             # read depths of all sco base positions in one list
@@ -53,7 +52,11 @@ def readPileup(pileupFile, outFile):
     
     index = 0
     
-    for line in f:
+    f = open(pileupFile, "r")
+    lines = f.readlines()
+    f.close()
+    
+    for line in lines:
         # vals[1] = index
         # vals[3] = depth at given base
         # vals[5] = base at position
@@ -84,7 +87,6 @@ def readPileup(pileupFile, outFile):
         
         index = int(vals[1])
     
-    f.close()
     
     final = {}
     
@@ -99,7 +101,7 @@ def readPileup(pileupFile, outFile):
     
     depthFile = open(outFile, "w+")        # need to rename file
     for key in final:
-        depthFile.write(key + " " + final[key] + "\r\n")
+        depthFile.write("{} {}\r\n".format(key, final[key]))
     depthFile.close()
     
     return final
