@@ -4,7 +4,7 @@
 #PBS -l walltime=06:00:00
 #PBS -m ae
 #PBS -j oe
-#PBS -o /srv/scratch/z5207331/testing2/ailin_log
+#PBS -o /srv/scratch/z5207331/olddepth/ailin_log
 
 cd /home/$USER/GenomeSize
 
