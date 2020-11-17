@@ -6,22 +6,33 @@ import math
 # import pysam
 
 def usageExample():
-    outdir = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/{}".format(sys.argv[1])
+    # outdir = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/{}".format(sys.argv[1])
+    outdir = "srv/scratch/z5207331/{}".format(sys.argv[1])
 
     pileup_file = "{}/pileup.out".format(outdir)
     out_file = "{}/depths.out".format(outdir)
 
-    depths = readPileup(pileup_file)
+    depths, depths_match = readPileup(pileup_file)
 
     mmDepth = modeOfModes(depths)     # list
-    maxDepth = maxMode(depths)         # list
-    maxMedDepth = maxMedian(depths)    # int
+    modDepth = modeDepth(depths)         # list
+    medMedDepth = medMedian(depths)    # int
+    
+    mmDepth2 = modeOfModes(depths_match)     # list
+    modDepth2 = modeDepth(depths_match)         # list
+    medMedDepth2 = medMedian(depths_match)    # int
 
     f = open(out_file, "w")
 
     f.write("mode of modes depth is {}\n".format(mmDepth))
-    f.write("modal depth is {}\n".format(maxDepth))
-    f.write("max median depth is {}\n".format(maxMedDepth))
+    f.write("modal depth is {}\n".format(modDepth))
+    f.write("median of median depth is {}\n".format(medMedDepth))
+    
+    f.write("========================== without mismatches ==========================\n")
+    
+    f.write("mode of modes depth is {}\n".format(mmDepth2))
+    f.write("modal depth is {}\n".format(modDepth2))
+    f.write("median of median depth is {}\n".format(medMedDepth2))
 
     f.close()
 
@@ -31,10 +42,10 @@ def getDepth(method: str, depths: list):
         depth = modeOfModes(depths)     # list
 
     elif method == 'maxDepth':
-        depth = maxMode(depths)         # list
+        depth = modeDepth(depths)         # list
 
     elif method == 'maxMedDepth':
-        depth = maxMedian(depths)    # int
+        depth = medMedian(depths)    # int
 
     return depth
 
@@ -93,20 +104,21 @@ def modeOfModes(depths):
         modes += mode(d)
     return max(mode(modes))
 
-
-def maxMode(depths):
+    
+# now its median of medians
+def medMedian(depths):
     maxes = []
     for d in depths:
-        maxes.append(max(d))
-    
-    return max(mode(maxes))
-    
-def maxMedian(depths):
-    maxes = []
-    for d in depths:
-        maxes.append(max(d))
+        maxes.append([math.floor(len(d)/2)])
     
     return maxes[math.floor(len(maxes)/2)]
+    
+def modeDepth(depths):
+    allDepths = []
+    for d in depths:
+        allDepths += d
+        
+    return max(mode(allDepths))
         
 if __name__ == "__main__":
     usageExample()
