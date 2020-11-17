@@ -7,7 +7,7 @@ import math
 
 def usageExample():
     # outdir = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/{}".format(sys.argv[1])
-    outdir = "srv/scratch/z5207331/{}".format(sys.argv[1])
+    outdir = "/srv/scratch/z5207331/{}".format(sys.argv[1])
 
     pileup_file = "{}/pileup.out".format(outdir)
     out_file = "{}/depths.out".format(outdir)
@@ -18,9 +18,9 @@ def usageExample():
     modDepth = modeDepth(depths)         # list
     medMedDepth = medMedian(depths)    # int
     
-    mmDepth2 = modeOfModes(depths_match)     # list
-    modDepth2 = modeDepth(depths_match)         # list
-    medMedDepth2 = medMedian(depths_match)    # int
+#    mmDepth2 = modeOfModes(depths_match)     # list
+#    modDepth2 = modeDepth(depths_match)         # list
+#    medMedDepth2 = medMedian(depths_match)    # int
 
     f = open(out_file, "w")
 
@@ -28,11 +28,11 @@ def usageExample():
     f.write("modal depth is {}\n".format(modDepth))
     f.write("median of median depth is {}\n".format(medMedDepth))
     
-    f.write("========================== without mismatches ==========================\n")
+#    f.write("========================== without mismatches ==========================\n")
     
-    f.write("mode of modes depth is {}\n".format(mmDepth2))
-    f.write("modal depth is {}\n".format(modDepth2))
-    f.write("median of median depth is {}\n".format(medMedDepth2))
+#    f.write("mode of modes depth is {}\n".format(mmDepth2))
+#    f.write("modal depth is {}\n".format(modDepth2))
+#   f.write("median of median depth is {}\n".format(medMedDepth2))
 
     f.close()
 
