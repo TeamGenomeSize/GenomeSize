@@ -14,12 +14,11 @@ module load samtools/1.10
 
 if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt ]]; then
     
-  if [[ -s ${OD}/${NAME}_${FILTER_LEN}.sam ]]; then
-      python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
-  else
+  if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}.sam ]]; then
       samtools view -@ ${THREADS} ${OD}/${NAME}_${FILTER_LEN}.bam > ${OD}/${NAME}_${FILTER_LEN}.sam
-      python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
   fi
+  
+  python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
 
   # rm ${OD}/${NAME}_${FILTER_LEN}.sam
   rm ${OD}/${NAME}_${FILTER_LEN}.bam
