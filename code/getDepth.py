@@ -25,9 +25,9 @@ def usageExample():
 
     f = open(out_file, "w")
 
-    f.write("mode of modes depth is {}\n".format(mmDepth))
-    f.write("modal depth is {}\n".format(modDepth))
-    f.write("median of median depth is {}\n".format(medMedDepth))
+    f.write("mmDepth {}\n".format(mmDepth))
+    f.write("modeDepth {}\n".format(modDepth))
+    f.write("medDepth {}\n".format(medMedDepth))
     
     # f.write("========================== without mismatches ==========================\n")
     
@@ -42,10 +42,10 @@ def getDepth(method: str, depths: list):
     if method == 'mmDepth':
         depth = modeOfModes(depths)     # list
 
-    elif method == 'maxDepth':
+    elif method == 'modeDepth':
         depth = modeDepth(depths)         # list
 
-    elif method == 'maxMedDepth':
+    elif method == 'medDepth':
         depth = medMedian(depths)    # int
 
     return depth
@@ -103,7 +103,7 @@ def modeOfModes(depths):
     modes = []
     for d in depths:
         modes += mode(d)
-    return max(mode(modes))
+    return math.mode(modes)
 
     
 # now its median of medians
@@ -120,7 +120,7 @@ def modeDepth(depths):
     for d in depths:
         allDepths += d
         
-    return max(mode(allDepths))
+    return math.mode(allDepths)
         
 if __name__ == "__main__":
     usageExample()
