@@ -110,7 +110,8 @@ def modeOfModes(depths):
 def medMedian(depths):
     maxes = []
     for d in depths:
-        maxes.append([math.floor(len(d)/2)])
+        s = sorted(d)
+        maxes.append(s[math.floor(len(s)/2)])
     
     return maxes[math.floor(len(maxes)/2)]
     
