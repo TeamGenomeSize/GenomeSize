@@ -9,14 +9,14 @@
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
 # NAME=e_coli
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_3
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_4
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
 # WD=/home/$USER/GenomeSize
 # THREADS=2
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=s_cerevisiae
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae_1
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv
 # WD=/home/$USER/GenomeSize
@@ -242,12 +242,13 @@ for FILTER_LEN in "${FILTERS[@]}"; do
     R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
 
     # specifying more than one is broken in qsub
-    JOBID=$(qsub \
+    JOB_ID=$(qsub \
     -o ${OD} \
     -W depend=afterok:${INDEL_PID} \
     -v LOG=${LOG},WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
     ${WD}/run.pbs | cut -d'.' -f1)
-    echo "qsub jobid is ${JOBID}"
+    echo "qsub jobid is ${JOB_ID}"
+    # JOB_IDS=${JOB_IDS}:${JOB_ID}
   done < ${WD}/assumptions.txt
 
   # qsub -o ${OD} -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
@@ -261,8 +262,10 @@ done
 echo "===========================================================" 
 echo "[Delete and tidy files]"
 
+JOB_ID=$( qstat -u ${USER} | tail -n1 | cut -d'.' -f1)
+
 qsub -o ${OD} \
--W depend=afterok:${JOBID} \
+-W depend=afterok:${JOB_ID} \
 -v OD=${OD},NAME=${NAME},LOG=${LOG},START=${START} \
 ${WD}/code/tidy.pbs
 
@@ -276,3 +279,4 @@ echo "==========================================================="
 qstat -u ${USER}
 
 } | tee -a ${LOG}
+

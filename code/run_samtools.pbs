@@ -6,11 +6,10 @@
 set -e						# if any error occurs, exit 1
 
 cd ${WD}
-echo "===========================================================" >> ${LOG}
-echo "[Executing run_samtools.pbs]" >> ${LOG}
-
 START_TIME=$( date +"%T" )					# records time taken by whole pipeline
 START=$( date -u -d "${START_TIME}" +"%s" )
+JOB_ID=$( echo ${PBS_JOBID} | cut -d'.' -f1 )
+echo "[Executing ${JOB_ID} run_samtools.pbs]" >> ${LOG}
 
 ##################
 ## LOAD MODULES ##
@@ -69,5 +68,5 @@ FINAL_TIME=$( date +"%T" )
 FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
 echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
 
-echo "[Finished executing run_samtools.pbs]" >> ${LOG}
+echo "[Finished executing ${JOB_ID} run_samtools.pbs]" >> ${LOG}
 echo "===========================================================" >> ${LOG}
