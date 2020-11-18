@@ -49,7 +49,7 @@ def main ():
     volume = readVolume(args.volume_path)
 
     # 2) get read depth
-    depths = readPileup(args.pileup_path)
+    depths, depths_matches = readPileup(args.pileup_path)
     depth = getDepth(args.method, depths) 
 
     # 3) calculate genome size (takes the floor function)
@@ -62,7 +62,18 @@ def main ():
     genome_size = round(genome_size / indel_bias,2)
 
     createLog()
+<<<<<<< HEAD
+    generateLog(volume, depth, genome_size)
+    
+    depth_matches = getDepth(args.method, depth_matches)
+    genome_size_matches = volume / depth_matches
+    
+    generateLog(volume, depth_matches, genome_size_matches)
+    
+    # 4) print out into a parseable log file with list of assumptions (ALANA)
+=======
     generateLog(volume, depth, genome_size, indel_bias)
+>>>>>>> calc_genome_size
 
     test_flags(indel_bias)
 
