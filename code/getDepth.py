@@ -12,7 +12,7 @@ def usageExample():
     pileup_file = "{}/pileup.out".format(outdir)
     out_file = "{}/depths.out".format(outdir)
 
-    depths, depths_match = readPileup(pileup_file)
+    depths = readPileup(pileup_file)
 
     mmDepth = modeOfModes(depths)     # list
     modDepth = modeDepth(depths)         # list
@@ -56,10 +56,10 @@ def getDepth(method: str, depths: list):
 def readPileup(pileupFile):
     f = open(pileupFile, "r")
     depths = []
-    depths_no_mismatch = []
+    # depths_no_mismatch = []
     
     curr_gene = []
-    curr_gene_no_mismatch = []
+    # curr_gene_no_mismatch = []
     index = 0
     
     for line in f:
@@ -70,19 +70,19 @@ def readPileup(pileupFile):
         vals = line.split()
         if int(vals[1]) != index + 1 and index != 0:
             depths.append(curr_gene)
-            depths_no_mismatch.append(curr_gene_no_mismatch)
+            # depths_no_mismatch.append(curr_gene_no_mismatch)
             curr_gene = []
-            curr_gene_no_mismatch = []
+            # curr_gene_no_mismatch = []
         
         curr_gene.append(int(vals[3]))
-        matches = count_match(vals[5])
-        curr_gene_no_mismatch.append(matches)
+        # matches = count_match(vals[5])
+        # curr_gene_no_mismatch.append(matches)
         
         index = int(vals[1])
     
     f.close()
     
-    return depths, depths_no_mismatch
+    return depths
 
 def count_match(string):
     bases = {"a": 0, "c": 0, "g":0, "t":0}
@@ -103,7 +103,7 @@ def modeOfModes(depths):
     modes = []
     for d in depths:
         modes += mode(d)
-    return math.mode(modes)
+    return max(mode(modes))
 
     
 # now its median of medians
@@ -120,7 +120,7 @@ def modeDepth(depths):
     for d in depths:
         allDepths += d
         
-    return math.mode(allDepths)
+    return max(mode(allDepths))
         
 if __name__ == "__main__":
     usageExample()
