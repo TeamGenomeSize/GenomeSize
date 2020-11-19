@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #PBS -l select=1:ncpus=1:mem=4gb
-#PBS -l walltime=1:00:00
+#PBS -l walltime=08:00:00
 #PBS -M sebastianporterzadro@gmail.com
 #PBS -m ae
 #PBS -j oe
@@ -12,4 +12,16 @@ source venv/bin/activate
 
 cd code/
 
-python3 indel_clipping_counter.py > indel_clipping_counter_output.txt
+module load samtools
+
+#samtools view e_coli.bam > output.txt
+#python3 indel_clipping_counter.py >> indel_clipping_counter_output.txt
+
+FILES=/srv/scratch/z5113143/GenomeSize/code/bam/*
+for bamFile in $FILES
+do
+    #echo $bamFile
+    #shortBamFile= echo $bamFile | sed 's/.+\/.*\.bam//' 
+    samtools view $bamFile > output.txt
+    python3 indel_clipping_counter.py >> indel_clipping_counter_output.txt
+done

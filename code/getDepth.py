@@ -12,28 +12,18 @@ def usageExample():
     pileup_file = "{}/pileup.out".format(outdir)
     out_file = "{}/depths.out".format(outdir)
 
-    depths, depths_match = readPileup(pileup_file)
+    depths = readPileup(pileup_file)
 
     mmDepth = modeOfModes(depths)     # list
     modDepth = modeDepth(depths)         # list
     medMedDepth = medMedian(depths)    # int
     
-#    mmDepth2 = modeOfModes(depths_match)     # list
-#    modDepth2 = modeDepth(depths_match)         # list
-#    medMedDepth2 = medMedian(depths_match)    # int
-
     f = open(out_file, "w")
 
-    f.write("mode of modes depth is {}\n".format(mmDepth))
-    f.write("modal depth is {}\n".format(modDepth))
-    f.write("median of median depth is {}\n".format(medMedDepth))
+    f.write("mmDepth {}\n".format(mmDepth))
+    f.write("modeDepth {}\n".format(modDepth))
+    f.write("medDepth {}\n".format(medMedDepth))
     
-#    f.write("========================== without mismatches ==========================\n")
-    
-#    f.write("mode of modes depth is {}\n".format(mmDepth2))
-#    f.write("modal depth is {}\n".format(modDepth2))
-#   f.write("median of median depth is {}\n".format(medMedDepth2))
-
     f.close()
 
 def getDepth(method: str, depths: list):
@@ -41,10 +31,10 @@ def getDepth(method: str, depths: list):
     if method == 'mmDepth':
         depth = modeOfModes(depths)     # list
 
-    elif method == 'maxDepth':
+    elif method == 'modeDepth':
         depth = modeDepth(depths)         # list
 
-    elif method == 'maxMedDepth':
+    elif method == 'medDepth':
         depth = medMedian(depths)    # int
 
     return depth
@@ -55,10 +45,10 @@ def getDepth(method: str, depths: list):
 def readPileup(pileupFile):
     f = open(pileupFile, "r")
     depths = []
-    depths_no_mismatch = []
+    # depths_no_mismatch = []
     
     curr_gene = []
-    curr_gene_no_mismatch = []
+    # curr_gene_no_mismatch = []
     index = 0
     
     for line in f:
@@ -69,19 +59,19 @@ def readPileup(pileupFile):
         vals = line.split()
         if int(vals[1]) != index + 1 and index != 0:
             depths.append(curr_gene)
-            depths_no_mismatch.append(curr_gene_no_mismatch)
+            # depths_no_mismatch.append(curr_gene_no_mismatch)
             curr_gene = []
-            curr_gene_no_mismatch = []
+            # curr_gene_no_mismatch = []
         
         curr_gene.append(int(vals[3]))
-        matches = count_match(vals[5])
-        curr_gene_no_mismatch.append(matches)
+        # matches = count_match(vals[5])
+        # curr_gene_no_mismatch.append(matches)
         
         index = int(vals[1])
     
     f.close()
     
-    return depths, depths_no_mismatch
+    return depths
 
 def count_match(string):
     bases = {"a": 0, "c": 0, "g":0, "t":0}
@@ -109,7 +99,8 @@ def modeOfModes(depths):
 def medMedian(depths):
     maxes = []
     for d in depths:
-        maxes.append([math.floor(len(d)/2)])
+        s = sorted(d)
+        maxes.append(s[math.floor(len(s)/2)])
     
     return maxes[math.floor(len(maxes)/2)]
     

@@ -2,12 +2,7 @@
 
 import sys
 
-  # assumptions
-    # method (str)
-    # insertion deletion (bool)
-    # read clipping (bool)
-
-methods = ['mmDepth', 'maxDepth', 'maxMedDepth']
+methods = ['maxDepth', 'maxMedDepth', 'mmDepth']
 indel = ['true', 'false']
 r_clipping = ['true', 'false']
 
