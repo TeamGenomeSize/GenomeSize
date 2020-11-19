@@ -46,24 +46,35 @@ args = parser.parse_args()
 def main ():
     
     # 1) get read volume
-    volume = readVolume(args.volume_path)
+    volume = readInput(args.volume_path)
+
+    # 1.1) adjust by indel bias
+    indel_bias = 1
+    if args.indel == "true":
+        indel_ratio_path = args.volume_path.replace("_read_volume.txt", "_indel_bias.txt")
+        indel_bias = readInput(indel_ratio_path)
+    
+    adjusted_volume = round(volume / indel_bias, 2)
+
+    # 1.2) adjust by clipping bias
+    clipping_bias = 1
+    if args.rc == "true":
+        clipping_bias_path = args.volume_path.replace("_read_volume.txt", "_clipping_bias.txt")
+        clipping_amount = readInput(clipping_bias_path)
+        clipping_bias = round(adjusted_volume / (adjusted_volume + clipping_amount), 2)
+    
+    adjusted_volume = round(adjusted_volume / clipping_bias, 2)
 
     # 2) get read depth
     depths = readPileup(args.pileup_path)
     depth = getDepth(args.method, depths, args.filter_len, args.od, args.name) 
 
-    # 3) calculate genome size (takes the floor function)
-    indel_bias = 1
-    genome_size = volume / depth
-    if args.indel == "true":
-        indel_ratio_path = args.volume_path.replace("_read_volume.txt", "_indel_bias.txt")
-        indel_bias = readVolume(indel_ratio_path)
-    
-    genome_size = round(genome_size / indel_bias,2)
+    # 3) calculate genome size
+    genome_size = round(adjusted_volume / depth, 2)
 
     # 4) print out into a parseable log file with list of assumptions (ALANA)
     createLog()
-    generateLog(volume, depth, genome_size, indel_bias)
+    generateLog(volume, depth, genome_size, indel_bias, clipping_bias)
     
 
     # test_flags(indel_bias)
@@ -74,17 +85,17 @@ def createLog():
     if not log.is_file():
         with open(args.od + "/" + args.name + "_genomeSize_log.csv", 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["PID","Filter", "Method", "Indel On", "Indel Bias" ,"Read Clipping On", "Volume", "Depth", "Genome Size"])
+            writer.writerow(["PID","Filter", "Method", "Indel On", "Indel Bias" ,"Read Clipping On", "Clipping Bias", "Volume", "Depth", "Genome Size"])
 
-def generateLog(vol, depth, gs, indel_bias):
+def generateLog(vol, depth, gs, indel_bias, clipping_bias):
     with open(args.od + "/" + args.name + "_genomeSize_log.csv", 'a+', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([args.pid, args.filter_len, args.method, args.indel, indel_bias, args.rc, vol, depth, gs])
+        writer.writerow([args.pid, args.filter_len, args.method, args.indel, indel_bias, args.rc, clipping_bias , vol, depth, gs])
 
-def readVolume(readVolumeFile: str):
+def readInput(readInputFile: str):
     read_volume = 0
 
-    with open(readVolumeFile) as f:
+    with open(readInputFile) as f:
         try:
             read_volume = float(f.readline().strip())
         except:

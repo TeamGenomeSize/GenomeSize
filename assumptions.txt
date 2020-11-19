@@ -6,7 +6,3 @@ method=mmDepth,indel=true,r_clipping=true
 method=mmDepth,indel=true,r_clipping=false
 method=mmDepth,indel=false,r_clipping=true
 method=mmDepth,indel=false,r_clipping=false
-method=modeDepth,indel=true,r_clipping=true
-method=modeDepth,indel=true,r_clipping=false
-method=modeDepth,indel=false,r_clipping=true
-method=modeDepth,indel=false,r_clipping=false

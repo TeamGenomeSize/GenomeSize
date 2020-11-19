@@ -15,14 +15,14 @@ module load samtools/1.10
 
 if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt ]]; then
     
-  if [[ -s ${OD}/${NAME}_${FILTER_LEN}.sam ]]; then
-      python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
+  if [[ -s ${OD}/${NAME}_${FILTER_LEN}.cigar ]]; then
+      python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.cigar
   else
-      samtools view -@ ${THREADS} ${OD}/${NAME}_${FILTER_LEN}.bam > ${OD}/${NAME}_${FILTER_LEN}.sam
-      python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
+      samtools view -@ ${THREADS} ${OD}/${NAME}_${FILTER_LEN}.bam | cut -f 6 > ${OD}/${NAME}_${FILTER_LEN}.cigar
+      python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.cigar
   fi
 
-  rm ${OD}/${NAME}_${FILTER_LEN}.sam
+  rm ${OD}/${NAME}_${FILTER_LEN}.cigar
   rm ${OD}/${NAME}_${FILTER_LEN}.bam
   rm ${OD}/${NAME}_${FILTER_LEN}.bam.bai
 

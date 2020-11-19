@@ -6,7 +6,8 @@ import csv
 from pathlib import Path
 
 samtools_view_output = sys.argv[1]
-# print(samtools_view_output)
+indel_output = sys.argv[1].replace(".cigar", "_indel_bias.txt")
+clipping_output = sys.argv[1].replace(".cigar", "_clipping_bias.txt")
 
 f = open(samtools_view_output, "r")
 
@@ -73,8 +74,9 @@ indel_ratio = (total["match"] + total["insertions"])/(total["match"]+total["dele
 if indel_ratio == 0:
     print("Error: ratio is 0")
 else:
-    #print(indel_ratio_dict["indel_bases"])
-    print((indel_ratio))
-    print(total["soft_clipping"])
+    with open(indel_output, 'w') as f:
+        f.write(str(indel_ratio) + "\n")
+    with open(clipping_output, 'w') as f:
+        f.write(str(total["soft_clipping"]) + "\n")
 
 

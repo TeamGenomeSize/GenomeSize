@@ -20,6 +20,7 @@ samtools stats /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-
 samtools view -@ 8 /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam  | cut -f 6  > results
 python3 get_indel_clipping.py results > indel_bias.txt
 
+
 FINAL_TIME=$( date +"%T" )
 FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
 
