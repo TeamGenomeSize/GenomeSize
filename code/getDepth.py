@@ -151,7 +151,7 @@ def medMedian(depths):
     return maxes[math.floor(len(maxes)/2)]
     
 def modeDepth(depths):
-    return mode(allDepths)
+    return mode(depths)
         
 if __name__ == "__main__":
     usageExample()
