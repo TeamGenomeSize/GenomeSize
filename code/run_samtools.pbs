@@ -3,8 +3,6 @@
 #PBS -l walltime=11:59:00
 #PBS -j oe
 
-exit 0 
-
 
 set -e						# if any error occurs, exit 1
 
