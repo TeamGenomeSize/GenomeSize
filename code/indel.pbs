@@ -4,6 +4,8 @@
 #PBS -l walltime=11:00:00
 #PBS -j oe
 
+exit 0 
+
 START_TIME=$( date +"%T" )					# records time taken by whole pipeline
 START=$( date -u -d "${START_TIME}" +"%s" )
 JOB_ID=$( echo ${PBS_JOBID} | cut -d'.' -f1 )

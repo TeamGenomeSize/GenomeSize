@@ -49,8 +49,8 @@ def main ():
     volume = readVolume(args.volume_path)
 
     # 2) get read depth
-    depths, depths_matches = readPileup(args.pileup_path)
-    depth = getDepth(args.method, depths) 
+    depths = readPileup(args.pileup_path)
+    depth = getDepth(args.method, depths, args.filter_len, args.od, args.name) 
 
     # 3) calculate genome size (takes the floor function)
     indel_bias = 1
@@ -61,21 +61,12 @@ def main ():
     
     genome_size = round(genome_size / indel_bias,2)
 
-    createLog()
-<<<<<<< HEAD
-    generateLog(volume, depth, genome_size)
-    
-    depth_matches = getDepth(args.method, depth_matches)
-    genome_size_matches = volume / depth_matches
-    
-    generateLog(volume, depth_matches, genome_size_matches)
-    
     # 4) print out into a parseable log file with list of assumptions (ALANA)
-=======
+    createLog()
     generateLog(volume, depth, genome_size, indel_bias)
->>>>>>> calc_genome_size
+    
 
-    test_flags(indel_bias)
+    # test_flags(indel_bias)
 
 
 def createLog():
@@ -83,12 +74,12 @@ def createLog():
     if not log.is_file():
         with open(args.od + "/" + args.name + "_genomeSize_log.csv", 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["PID","Method", "Filter", "Indel On", "Indel Bias" ,"Read Clipping On", "Volume", "Depth", "Genome Size"])
+            writer.writerow(["PID","Filter", "Method", "Indel On", "Indel Bias" ,"Read Clipping On", "Volume", "Depth", "Genome Size"])
 
 def generateLog(vol, depth, gs, indel_bias):
     with open(args.od + "/" + args.name + "_genomeSize_log.csv", 'a+', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([args.pid, args.method, args.filter_len, args.indel, indel_bias, args.rc, vol, depth, gs])
+        writer.writerow([args.pid, args.filter_len, args.method, args.indel, indel_bias, args.rc, vol, depth, gs])
 
 def readVolume(readVolumeFile: str):
     read_volume = 0
