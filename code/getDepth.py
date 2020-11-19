@@ -3,6 +3,7 @@
 import os
 import sys
 import math
+import statistics
 import time
 from pathlib import Path
 
@@ -151,7 +152,7 @@ def medMedian(depths):
     return maxes[math.floor(len(maxes)/2)]
     
 def modeDepth(depths):
-    return math.mode(depths)
+    return statistics.mode(depths)
         
 if __name__ == "__main__":
     usageExample()
