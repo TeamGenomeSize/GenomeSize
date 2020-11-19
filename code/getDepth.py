@@ -151,11 +151,7 @@ def medMedian(depths):
     return maxes[math.floor(len(maxes)/2)]
     
 def modeDepth(depths):
-    allDepths = []
-    for d in depths:
-        allDepths += d
-        
-    return max(mode(allDepths))
+    return mode(allDepths)
         
 if __name__ == "__main__":
     usageExample()
