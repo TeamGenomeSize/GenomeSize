@@ -10,7 +10,9 @@ cd /home/z5206657/GenomeSize/code
 
 module load samtools/1.10
 
-samtools view /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam  > output.txt
+samtools stats -@ 8 /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam | grep ^RL | cut -f 2- | awk '{total+=$1*$2} END{print total}' > indel_bias.output
+
+samtools view -@ 8 /srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam  > output.txt
 
 python3 indel_bias.py > indel_bias.output
 

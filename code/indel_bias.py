@@ -64,7 +64,7 @@ for line in f:
 indel_dict = {"indel_regions" : 0, "indel_bases" : 0}
 indel_dict["indel_regions"] = (counter_dict["total_matched_regions"] + counter_dict["total_insertion_regions"])/(counter_dict["total_matched_regions"] + counter_dict["total_deletion_regions"])
 indel_dict["indel_bases"] = (counter_dict["total_matched_bases"] + counter_dict["total_inserted_bases"])/(counter_dict["total_matched_bases"]+counter_dict["total_deleted_bases"])
-#print(indel_dict)
+print(indel_dict)
 #print(indel_dict["indel_regions"])
 
 # indel ratio
