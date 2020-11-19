@@ -28,7 +28,7 @@ def usageExample():
     
     f.close()
 
-def getDepth(method: str, depths: list, filter_len: str, od: str, name: str):
+def getDepth(method: str, depths: list, all_depths:list, filter_len: str, od: str, name: str):
     output = od + "/" + name + "_" + str(filter_len) + "_" + method + ".txt"
     time_limit = 20700 # 5h 45m
     check_interval = 300 # check every 5m
@@ -57,7 +57,7 @@ def getDepth(method: str, depths: list, filter_len: str, od: str, name: str):
             depth = modeOfModes(depths)    
 
         elif method == 'modeDepth':
-            depth = modeDepth(depths)        
+            depth = modeDepth(all_depths)        
 
         elif method == 'medDepth':
             depth = medMedian(depths)   

@@ -49,8 +49,8 @@ def main ():
     volume = readVolume(args.volume_path)
 
     # 2) get read depth
-    depths = readPileup(args.pileup_path)
-    depth = getDepth(args.method, depths, args.filter_len, args.od, args.name) 
+    depths, all_depths = readPileup(args.pileup_path)
+    depth = getDepth(args.method, depths, all_depths, args.filter_len, args.od, args.name) 
 
     # 3) calculate genome size (takes the floor function)
     indel_bias = 1
