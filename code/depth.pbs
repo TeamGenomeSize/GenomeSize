@@ -4,8 +4,8 @@
 #PBS -l walltime=6:00:00
 #PBS -m ae
 #PBS -j oe
-#PBS -o /srv/scratch/z5207331/testing-depth/log
+#PBS -o /srv/scratch/z5207331/depth2/log
 
 cd /home/$USER/GenomeSize
 
-python3 /home/$USER/GenomeSize/code/getDepth.py testing-depth
+python3 /home/$USER/GenomeSize/code/getDepth.py depth2

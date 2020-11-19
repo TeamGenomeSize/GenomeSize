@@ -4,7 +4,8 @@
 #PBS -l walltime=00:05:00
 #PBS -j oe
 
-echo "[Executing tidy.pbs]"
+JOB_ID=$( echo ${PBS_JOBID} | cut -d'.' -f1 )
+echo "[Executing ${JOB_ID} tidy.pbs]"
 
 chmod -R 775 ${OD}/
 
@@ -13,7 +14,7 @@ FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
 
 echo "===========================================================" >> ${LOG}
 echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
+echo "[Finished ${JOB_ID} executing tidy.pbs]"
 echo "===========================================================" >> ${LOG}
 echo "===========================================================" >> ${LOG}
 
-echo "[Finished executing tidy.pbs]"

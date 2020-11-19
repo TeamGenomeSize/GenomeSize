@@ -2,7 +2,7 @@
 
 import sys
 
-methods = ['maxDepth', 'maxMedDepth', 'mmDepth']
+methods = ['medDepth', 'mmDepth', 'modeDepth']
 indel = ['true', 'false']
 r_clipping = ['true', 'false']
 
@@ -17,8 +17,6 @@ for method in methods:
                 'method',method,'indel',status,'r_clipping',setting
             ))
             counter = counter + 1
-print("\n")
 print("[assumptions.py] Number of assumption combinations = {}".format(counter))
-print("\n")
 
 f.close()
