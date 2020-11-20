@@ -21,6 +21,8 @@ if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt ]]; then
       samtools view -@ ${THREADS} ${OD}/${NAME}_${FILTER_LEN}.bam | cut -f 6 > ${OD}/${NAME}_${FILTER_LEN}.cigar
       python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.cigar
   fi
+  
+  python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
 
   rm ${OD}/${NAME}_${FILTER_LEN}.cigar
   rm ${OD}/${NAME}_${FILTER_LEN}.bam
