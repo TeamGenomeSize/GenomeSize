@@ -3,42 +3,32 @@
 import os
 import sys
 import math
+import statistics
 import time
 from pathlib import Path
 
 def usageExample():
     # outdir = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/{}".format(sys.argv[1])
-    outdir = "srv/scratch/z5207331/{}".format(sys.argv[1])
+    outdir = "/srv/scratch/z5207331/{}".format(sys.argv[1])
 
     pileup_file = "{}/pileup.out".format(outdir)
     out_file = "{}/depths.out".format(outdir)
 
-    depths = readPileup(pileup_file)
+    depths, all_depths = readPileup(pileup_file)
 
     mmDepth = modeOfModes(depths)     # list
-    modDepth = modeDepth(depths)         # list
+    modDepth = modeDepth(all_depths)         # list
     medMedDepth = medMedian(depths)    # int
     
-    # matching that could make it slow
-    # mmDepth2 = modeOfModes(depths_match)     # list
-    # modDepth2 = modeDepth(depths_match)         # list
-    # medMedDepth2 = medMedian(depths_match)    # int
-
     f = open(out_file, "w")
 
     f.write("mmDepth {}\n".format(mmDepth))
     f.write("modeDepth {}\n".format(modDepth))
     f.write("medDepth {}\n".format(medMedDepth))
     
-    # f.write("========================== without mismatches ==========================\n")
-    
-    # f.write("mode of modes depth is {}\n".format(mmDepth2))
-    # f.write("modal depth is {}\n".format(modDepth2))
-    # f.write("median of median depth is {}\n".format(medMedDepth2))
-
     f.close()
 
-def getDepth(method: str, depths: list, filter_len: str, od: str, name: str):
+def getDepth(method: str, depths: list, all_depths:list, filter_len: str, od: str, name: str):
     output = od + "/" + name + "_" + str(filter_len) + "_" + method + ".txt"
     time_limit = 20700 # 5h 45m
     check_interval = 300 # check every 5m
@@ -54,7 +44,7 @@ def getDepth(method: str, depths: list, filter_len: str, od: str, name: str):
         # quit if it takes longer than 5h and 45m    
         else:
             print("File not found after waiting:", time_limit, " seconds!")
-            exit
+            exit(1)
 
     # file exists and isn't empty so just read it
     elif os.path.exists(output) and os.path.getsize(output) > 0:
@@ -67,7 +57,7 @@ def getDepth(method: str, depths: list, filter_len: str, od: str, name: str):
             depth = modeOfModes(depths)    
 
         elif method == 'modeDepth':
-            depth = modeDepth(depths)        
+            depth = modeDepth(all_depths)        
 
         elif method == 'medDepth':
             depth = medMedian(depths)   
@@ -107,33 +97,28 @@ def watchFile( filename, time_limit=3600, check_interval=60 ):
 def readPileup(pileupFile):
     f = open(pileupFile, "r")
     depths = []
-    # depths_no_mismatch = []
+    all_depths =[]
     
     curr_gene = []
-    # curr_gene_no_mismatch = []
     index = 0
     
     for line in f:
         # vals[1] = position
         # vals[3] = depth at given base
-        # vals[5] = base read at position
         
         vals = line.split()
         if int(vals[1]) != index + 1 and index != 0:
             depths.append(curr_gene)
-            # depths_no_mismatch.append(curr_gene_no_mismatch)
             curr_gene = []
-            # curr_gene_no_mismatch = []
         
         curr_gene.append(int(vals[3]))
-        # matches = count_match(vals[5])
-        # curr_gene_no_mismatch.append(matches)
+        all_depths.append(int(vals[3]))
         
         index = int(vals[1])
     
     f.close()
     
-    return depths
+    return depths, all_depths
 
 def count_match(string):
     bases = {"a": 0, "c": 0, "g":0, "t":0}
@@ -165,13 +150,10 @@ def medMedian(depths):
         maxes.append(s[math.floor(len(s)/2)])
     
     return maxes[math.floor(len(maxes)/2)]
-    
+
+# mode when looking at all sco residues
 def modeDepth(depths):
-    allDepths = []
-    for d in depths:
-        allDepths += d
-        
-    return max(mode(allDepths))
+    return statistics.mode(depths)
         
 if __name__ == "__main__":
     usageExample()

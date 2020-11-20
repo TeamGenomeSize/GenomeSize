@@ -2,7 +2,7 @@
 
 import sys
 
-methods = ['medDepth', 'mmDepth']
+methods = ['medDepth', 'mmDepth', 'modeDepth']
 indel = ['true', 'false']
 r_clipping = ['true', 'false']
 

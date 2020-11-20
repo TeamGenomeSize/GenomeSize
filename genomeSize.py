@@ -66,11 +66,11 @@ def main ():
     adjusted_volume = round(adjusted_volume / clipping_bias, 2)
 
     # 2) get read depth
-    depths = readPileup(args.pileup_path)
-    depth = getDepth(args.method, depths, args.filter_len, args.od, args.name) 
+    depths, all_depths = readPileup(args.pileup_path)
+    depth = getDepth(args.method, depths, all_depths, args.filter_len, args.od, args.name) 
 
     # 3) calculate genome size
-    genome_size = round(adjusted_volume / depth, 2)
+    genome_size = round( adjusted_volume / depth, 2)
 
     # 4) print out into a parseable log file with list of assumptions (ALANA)
     createLog()

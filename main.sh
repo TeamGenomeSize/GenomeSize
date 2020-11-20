@@ -9,10 +9,10 @@
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
 # NAME=e_coli
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_1
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_6
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
-# WD=/home/$USER/GenomeSizes
+# WD=/home/$USER/GenomeSize
 # THREADS=2
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=s_cerevisiae
@@ -23,28 +23,28 @@
 # THREADS=4
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=c_elegans
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans_2
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/bam/c_elegans.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/busco3/run_c_elegans/full_table_c_elegans.tsv
 # WD=/home/$USER/GenomeSize
 # THREADS=8
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=m_musculus
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus_2
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/bam/m_musculus.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/busco3/run_m_musculus/full_table_m_musculus.tsv
 # WD=/home/$USER/GenomeSize
 # THREADS=8
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=d_melanogaster
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster_1
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/bam/d_melanogaster.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/busco3/run_d_melanogaster/full_table_d_melanogaster.tsv
 # WD=/home/$USER/GenomeSize
 # THREADS=8
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=a_thaliana
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana_1
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/busco3/run_a_thaliana/full_table_a_thaliana.tsv
 # WD=/home/$USER/GenomeSize
@@ -52,10 +52,11 @@
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
 
-
-
 # setting default flags
 THREADS=2
+FILTERS=('0' '1000' '5000')
+CUSTOM="false"
+
 
 ## LOGS AND ERRORS
 set -e						# if any error occurs, exit 1
@@ -67,25 +68,23 @@ START=$( date -u -d "${START_TIME}" +"%s" )
 ## Variables ##
 ###############
 
-# Mandatory:
-# - ${OD}, path of the working/output directory of script
-# - ${NAME}, rootname for files created by pipeline
-# - #{WD}, path to top level of code i.e. same level as this main.sh script
-
-# Optional:
-# - ${REF_GENOME}, path to reference genome
-# - ${SCO}, path to tsv of BUSCO single copy ortholog output
-# - ${BAM}, path to bam file of mapped reads
-# - ${THREADS}, number of threads to run samtools computations
-
-
 ##                                                                              ##
 # getopts handling adapted from:                                                 #
 # https://stackoverflow.com/questions/18414054/reading-optarg-for-optional-flags #
 ##                                                                              ##
 
 function print_usage {
-  echo "banana"
+echo "Usage: ./main.sh [optional] -od <output_dir> -nn <species> -wd <working_dir> -b <in.bam> -sco <.tsv> [optional]"
+echo "Mandatory:"
+echo "-nm NAME      rootname for files created by pipeline"
+echo "-wd PATH      path to top level of code i.e. same level as this main.sh script"
+echo "-od PATH      path to desired output directory (must already exist)"
+echo "-sco FILE     path to tsv of BUSCO single copy ortholog output"
+echo "-b FILE       path to bam file of mapped reads"
+
+echo "Optional:"
+echo "-t INT        number of threads to run samtools computations"
+echo "-c            flag to specify custom generation of assumptions"
 }
 
 
@@ -101,14 +100,14 @@ else
       echo "WARNING: You may have left an argument blank. Double check your command." 
     fi
     case "$opt" in
-      "-od"|"--output_dir"              ) OD="$1"; shift;;
-      "-b"|"--bam"                      ) BAM="$1"; shift;;
-      "-sco"|"--single_copy_orthologs"  ) SCO="$1"; shift;;
-      "-rf"|"--reference_genome"        ) REF_GENOME="$1"; shift;;
-      "-nm"|"--name"                    ) NAME="$1"; shift;;
-      "-wd"|"--working_dir"             ) WD="$1"; shift;;
-      "-t"|"--threads"                  ) THREADS="$1"; shift;;
-      *                                 ) echo "ERROR: Invalid option: \""$opt"\"" >&2
+      "-od"|"--output_dir"               ) OD="$1"; shift;;
+      "-b"|"--bam"                       ) BAM="$1"; shift;;
+      "-sco"|"--single_copy_orthologs"   ) SCO="$1"; shift;;
+      "-c"|"--custom_assumptions"        ) CUSTOM="true"; shift;;
+      "-nm"|"--name"                     ) NAME="$1"; shift;;
+      "-wd"|"--working_dir"              ) WD="$1"; shift;;
+      "-t"|"--threads"                   ) THREADS="$1"; shift;;
+      *                                  ) echo "ERROR: Invalid option: \""$opt"\"" >&2
       exit 1;;
     esac
   done
@@ -200,8 +199,12 @@ echo "REF_GENOME = ${REF_GENOME}"
 
 echo "===========================================================" 
 
-echo "[Compute array of assumptions to try]"
-python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
+if [[ ${CUSTOM} == "true" ]]; then
+  continue
+else
+  echo "[Compute array of assumptions to try]"
+  python3 ${WD}/code/assumptions.py ${WD}/assumptions.txt
+fi
 
 echo "===========================================================" 
 
@@ -209,14 +212,13 @@ echo "==========================================================="
 
 # Loop multiple read filter lengths
 # This will multiply the number assumptions tested by length of array
-FILTERS=('0' '1000' '5000')
 for FILTER_LEN in "${FILTERS[@]}"; do
 
   {
   echo "[Compute all intermediary files]"
   PRELIM_PROCESS_PID=$(qsub \
   -o ${OD} \
-  -l select=${THREADS}:ncpus=1:mem=4gb \
+  -l select=${THREADS}:ncpus=1:mem=6gb \
   -v LOG=${LOG},BAM=${BAM},WD=${WD},OD=${OD},SCO=${SCO},NAME=${NAME},THREADS=${THREADS},FILTER_LEN=${FILTER_LEN} \
   ${WD}/code/run_samtools.pbs | cut -d'.' -f1)
   echo "PRELIM_PROCESS_PID is ${PRELIM_PROCESS_PID}"

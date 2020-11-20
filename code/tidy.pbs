@@ -14,7 +14,7 @@ FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
 
 echo "===========================================================" >> ${LOG}
 echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
-echo "[Finished ${JOB_ID} executing tidy.pbs]"
+echo "[Finished ${JOB_ID} executing tidy.pbs]" >> ${LOG}
 echo "===========================================================" >> ${LOG}
 echo "===========================================================" >> ${LOG}
 
