@@ -39,9 +39,9 @@ if [[ ! -s ${VOLUME} ]]; then
 fi
 
 
-##################
-## READ PILEUPS ##
-##################
+#############
+## PILEUPS ##
+#############
 
 if [[ ! -s ${SORTED_BED} ]]; then
     # get bed file
