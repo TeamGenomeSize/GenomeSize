@@ -200,7 +200,7 @@ Samtools mpileup does not explicitly state how it handles soft clipping in any o
 
 ### Indel Bias
 
-The insertion deletion (indel) bias was incorporated based on the assumption that sequencing technologies such as Nanopore and PacBio are not 100% accurate. Depending on the technology, there may be a technical bias towards erroneous insertions, deletions etc. A bias towards insertions means the mapped reads are larger than reality (overinflation) and conversely a bias toward deletions in the technology suggest the mapped reads are lower than reality (underestimation). 
+The insertion deletion (indel) bias was incorporated based on the assumption that sequencing technologies such as Nanopore and PacBio are not 100% accurate. Depending on the technology, there may be a technical bias towards erroneous insertions, deletions etc. A bias towards insertions means the mapped reads are larger than reality (overinflation). Conversely a bias toward deletions in the technology suggests the mapped reads are lower than reality (underestimation). 
 
 The indel bias flag will modify the read volume estimation by analysing the underlying bias in the sequencing data. The flag can be turned on/off by setting the assumption to true/false in assumptions.txt. The indel bias ratio equals the total matches + total insertions (total read bases mapped) divided by the total matches + total deletions (the total bases in the assembly). The calculation is computed through analysis of the mapped reads’ CIGAR strings.
 
