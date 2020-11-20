@@ -8,7 +8,7 @@ Pipeline launches multiple scripts to predict genome size from a BAM file of map
  
 # Getting Started
 
-### Quick Usage
+### Normal Usage
 
 Will run pipeline with the default generated `assumptions.txt` and two threads.
 ```
@@ -21,8 +21,9 @@ THREADS=2
 mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 ```
 
-### Running custom set of assumptions
+### Custom Usage
 
+Instead of running the pipeline with the default set of assumptions in `assumptions.txt` you may specify only the ones you want to compute.
 1) Modify `assumptions.txt` with desired set of assumptions
 2) Add -c flag to pipeline and otherwise run normally
 ```
