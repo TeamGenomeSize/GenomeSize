@@ -1,6 +1,8 @@
 # USER DOCUMENTATION: Genome Size
 
-Estimating genome size from long-read sequencing data. Re-engineering and extending [Richard Edward’s implementation](https://github.com/slimsuite/diploidocus). Read length filtering, insertion/deletion bias and soft clipping bias have been accounted for.
+- Estimate genome size from long-read sequencing data
+- Re-engineering and extending [Richard Edward’s implementation](https://github.com/slimsuite/diploidocus)
+- Read length filtering, insertion/deletion bias and soft clipping bias have been accounted for.
  
 Pipeline launches multiple scripts to predict genome size from a BAM file of mapped long-read data and a BUSCO generated .tsv of single copy orthologs. The pipeline produces multiple size predictions, one each for each combination of assumptions. This pipeline automates the testing of each combination of assumptions to allow for an empirical method to calculate genome size. It considers technical influences from sequencing or read mapping that may distort a genome size prediction, leaving it to the researcher’s discretion and their knowledge of the biases of their data to make a final decision.
  
@@ -205,7 +207,7 @@ The indel bias flag will modify the read volume estimation by analysing the unde
 
 Short reads tend to map to repeat regions less effectively as repeats may sometimes be longer than reads sequenced, resulting in repeats being collapsed. This may artificially inflate the calculated read depth. Hence this pipeline utilises long-read sequencing data. The pipeline allows the ability to filter reads below a minimum length. The pipeline has a default setting that computes genome size with three settings - filtering reads below a minimum read length of  0, 1000 and 5000 bases. Reads are filtered from both the read volume and read depth calculations.
 
-### Read Depth (Ailin)
+### Read Depth
 Taking only the coverage of bases in regions of single copy orthologs (a gene sequence contained only once in the whole genome), the probability of overcounting reads being mapped to the wrong repeated regions is reduced. However there are still varying read depths per base in these regions due to different overlapping reads. It is not immediately clear how read depth should be calculated to give the read depths observed in each base pair in the single copy orthologs. Therefore the program calculates and returns three read depths of different assumptions for further genome size calculations.
 
 Read depth can be calculated in the following three ways:
