@@ -8,17 +8,21 @@ import time
 from pathlib import Path
 
 def usageExample():
-    # outdir = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/{}".format(sys.argv[1])
-    outdir = "/srv/scratch/z5207331/{}".format(sys.argv[1])
+    # example output directory
+    # to only run the usage example use
+    # python3 getDepth.py output_directory
+    # make sure the pileup file exists in output_directory first
+    # outdir = "/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/"
+    outdir = sys.argv[1]
 
     pileup_file = "{}/pileup.out".format(outdir)
     out_file = "{}/depths.out".format(outdir)
 
     depths, all_depths = readPileup(pileup_file)
 
-    mmDepth = modeOfModes(depths)     # list
-    modDepth = modeDepth(all_depths)         # list
-    medMedDepth = medMedian(depths)    # int
+    mmDepth = modeOfModes(depths)
+    modDepth = modeDepth(all_depths)
+    medMedDepth = medMedian(depths)    
     
     f = open(out_file, "w")
 
@@ -141,15 +145,15 @@ def modeOfModes(depths):
         modes += mode(d)
     return max(mode(modes))
 
-    
-# now its median of medians
+# median of medians
+# used for comparison with mode of modes
+# simply experimental
 def medMedian(depths):
-    maxes = []
+    medians = []
     for d in depths:
-        s = sorted(d)
-        maxes.append(s[math.floor(len(s)/2)])
+        medians.append(statistics.median(d))
     
-    return maxes[math.floor(len(maxes)/2)]
+    return statistics.median(medians)
 
 # mode when looking at all sco residues
 def modeDepth(depths):
