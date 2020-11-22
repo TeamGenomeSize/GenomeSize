@@ -124,13 +124,6 @@ def readPileup(pileupFile):
     
     return depths, all_depths
 
-def count_match(string):
-    bases = {"a": 0, "c": 0, "g":0, "t":0}
-    for i in string.lower():
-        if i in bases:
-            bases[i] += 1
-    
-    return max(bases.values())
 
 # https://stackoverflow.com/questions/10797819/finding-the-mode-of-a-list/10797913
 # creates a list of unique somethings
