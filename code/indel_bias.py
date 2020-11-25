@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-
 import sys, re
 import csv
 from pathlib import Path
@@ -18,7 +17,6 @@ total = {"deletions" : 0, "insertions" : 0, "soft_clipping" : 0, "hard_clipping"
 
 # M I = X
 for line in f:
-    #line_outputs = re.split("\t", line)
 
     cigar_indels = re.findall("[0-9]+[=]", line)
     for gap in cigar_indels:
@@ -61,14 +59,10 @@ for line in f:
         x = re.split("\D", gap)
         total["match"] += int(x[0])        
 
-print(total)
-#print(counter_dict)
-
-#indel_ratio_dict = {"indel_regions" : 0, "indel_bases" : 0}
-
-#indel_ratio_dict["indel_bases"] = (total["match"] + total["insertions"])/(total["match"]+total["deletions"])
+# print(total)
 
 indel_ratio = (total["match"] + total["insertions"])/(total["match"]+total["deletions"])
+# print(indel_ratio)
 
 # indel ratio
 if indel_ratio == 0:
@@ -76,7 +70,8 @@ if indel_ratio == 0:
 else:
     with open(indel_output, 'w') as f:
         f.write(str(indel_ratio) + "\n")
-    with open(clipping_output, 'w') as f:
-        f.write(str(total["soft_clipping"]) + "\n")
+
+with open(clipping_output, 'w') as f:
+    f.write(str(total["soft_clipping"]) + "\n")
 
 

@@ -2,6 +2,8 @@
 
 import sys
 
+# This will generate assumptions.txt
+# e.g. modify this to add more depth options when a method is implemented
 methods = ['medDepth', 'mmDepth', 'modeDepth']
 indel = ['true', 'false']
 r_clipping = ['true', 'false']

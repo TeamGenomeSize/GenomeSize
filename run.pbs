@@ -5,11 +5,6 @@
 #PBS -j oe
 
 set -e						# if any error occurs, exit 1
-
-#########
-# test runs
-# qsub -v bam=${BAM},wd=${WD},od=${OD},sco=${SCO},name=${NAME},\
-#  filter_len=${FILTER_LEN},assumptions=${ASSUMPTIONS} run.pbs
 cd ${WD}
 
 ##################
@@ -22,13 +17,17 @@ JOB_ID=$( echo ${PBS_JOBID} | cut -d'.' -f1 )
 #################
 ## GENOME SIZE ##
 #################
-echo "[Executing ${JOB_ID} run.pbs]" >> ${LOG}
+echo "[Executing ${JOB_ID} run.pbs for ${NAME},${FILTER_LEN},${METHOD}]" >> ${LOG}
 
 START_TIME=$( date +"%T" )					# records time taken by whole pipeline
 START=$( date -u -d "${START_TIME}" +"%s" )
 
+# sleeping 0,1,2,3 or 4 seconds to reduce possibility that two processes
+# end up writing to the same file at the same time
+# slightly janky, but it works as far as I can tell :^)
+sleep $[ ( $RANDOM % 10 ) + 1 ]s
 
-# taking outputs and giving an answer
+# taking output all .txt and giving an answer
 python3 genomeSize.py -od ${OD} -n ${NAME} -p ${PILEUP} -v ${VOLUME} \
 -m ${METHOD} -i ${INDEL} -rc ${R_CLIPPING} -fl ${FILTER_LEN} -pid ${JOB_ID}
 
@@ -37,5 +36,5 @@ FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
 
 echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
 
-echo "[Finished executing ${JOB_ID} run.pbs]" >> ${LOG}
+echo "[Finished executing ${JOB_ID} run.pbs for ${NAME},${FILTER_LEN},${METHOD}]" >> ${LOG}
 echo "===========================================================" >> ${LOG}

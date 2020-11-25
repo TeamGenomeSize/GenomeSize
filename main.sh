@@ -9,7 +9,7 @@
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
 # NAME=e_coli
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_6
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_7
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
 # WD=/home/$USER/GenomeSize
@@ -54,13 +54,13 @@
 
 # setting default flags
 THREADS=2
-FILTERS=('0' '1000' '5000')
+FILTERS=('5000' '1000' '0')
 CUSTOM="false"
 
 
 ## LOGS AND ERRORS
-set -e						# if any error occurs, exit 1
-START_TIME=$( date +"%T" )					# records time taken by whole pipeline
+set -e						                           # if any error occurs, exit 1
+START_TIME=$( date +"%T" )					         # records time taken by whole pipeline
 START=$( date -u -d "${START_TIME}" +"%s" )
 
 
@@ -116,75 +116,28 @@ fi
 
 
 # ERROR HANDLING OF MISSING MANDATORY ARGUMENTS
-# TODO
-if [[ "$OD" == "" || "$NAME" == "" || "$WD" == "" ]]; then
-  echo "ERROR: Option -od, -nm, -wd require arguments." >&2
+if [[ "$OD" == "" ]]; then
+  echo "ERROR: Flag -od, -nm, -wd is mandatory."
+  exit 1
+elif [[ "$NAME" == "" ]]; then
+  echo "ERROR: Flag -nm, -wd is mandatory."
+  exit 1
+elif [[ "$WD" == "" ]]; then
+  echo "ERROR: Flag -wd is mandatory."
+  exit 1
+elif [[ "$BAM" == "" ]]; then
+  echo "ERROR: Flag -b is mandatory."
+  exit 1
+elif [[ "$SCO" == "" ]]; then
+  echo "ERROR: Flag -sco is mandatory."
   exit 1
 fi
 
-
-# have bam, have sco, have ref FAIL, wait for input of which one to do
-if [[ "$BAM" != ""  && "$SCO" != "" && "$REF_GENOME" != "" ]]; then
-  echo "Press 1: Run from BAM and SCO (fast)"
-  echo "Press 2: Run from reference genome (slow)"
-  read -n 1 -p "Input Selection:" input
-  if [[ $input == "2" ]]; then
-    $CALC_SCO=true
-  elif [[ $input == "1" ]]; then
-    $CALC_SCO=false
-  else
-    echo "ERROR: You have entered an invalid selection, please rerun correctly"
-    exit 1
-  fi
-fi
-
-# have bam, no sco, have ref FAIL, wait for input to do busco/mmseq or include sco
-if [[ "$BAM" != ""  && "$SCO" == "" && "$REF_GENOME" != "" ]]; then
-  echo "Press 1: Program will exit and please run again providing BAM"
-  echo "Press 2: Run from reference genome (slow)"
-  read -n 1 -p "Input Selection:" input
-  if [[ $input == "1" ]]; then
-    exit 1
-  elif [[ $input == "2" ]]; then
-    $CALC_SCO=true
-  else
-    echo "ERROR: You have entered an invalid selection, please rerun correctly"
-    exit 1
-  fi
-fi
-
-# have bam, no sco, no ref FAIL, missing sco
-if [[ "$BAM" != ""  && "$SCO" == "" && "$REF_GENOME" == "" ]]; then
-  echo "ERROR: Missing single copy ortholog .tsv (-sco)"
-  exit 1
-fi
-
-# no bam, have sco, no ref FAIL, missing BAM
-if [[ "$BAM" == ""  && "$SCO" != "" && "$REF_GENOME" == "" ]]; then
-  echo "ERROR: Missing .bam (-bam)"
-  exit 1
-fi
-
-# no bam, no sco, no ref FAIL, missing stuff
-if [[ "$BAM" == ""  && "$SCO" == "" && "$REF_GENOME" == "" ]]; then
-  echo "Either provide a reference genome (slow) OR provide a bam and corresponding sco file (fast)"
-  exit 1
-fi
-
-if [[ "$BAM" != ""  && "$SCO" != "" && "$REF_GENOME" == "" ]]; then
-  continue
-elif [[ "$BAM" == ""  && "$SCO" == "" && "$REF_GENOME" != "" ]]; then
-  continue
-else
-  echo "Either provide a reference genome (slow) OR provide a bam and corresponding sco file (fast)"
-  exit 1
-fi
-
+# Initialise the log file
 LOG=${OD}/pipeline_log.txt
 touch ${LOG}
 
-  
-# everything between the curly brackets gets printed to stdout and ${LOG} 
+# everything between the curly brackets gets printed to stdout then appended to ${LOG} 
 { 
 echo "===========================================================" 
 echo [$(date)] "PID: $$" 
@@ -195,7 +148,6 @@ echo "BAM =${BAM}"
 echo "OUTPUT_DIRECTORY = ${OD}"
 echo "SCO = ${SCO}"
 echo "NAME = ${NAME}"
-echo "REF_GENOME = ${REF_GENOME}"
 
 echo "===========================================================" 
 
@@ -213,7 +165,6 @@ echo "==========================================================="
 # Loop multiple read filter lengths
 # This will multiply the number assumptions tested by length of array
 for FILTER_LEN in "${FILTERS[@]}"; do
-
   {
   echo "[Compute all intermediary files]"
   PRELIM_PROCESS_PID=$(qsub \
@@ -232,8 +183,10 @@ for FILTER_LEN in "${FILTERS[@]}"; do
   -l select=${THREADS}:ncpus=1:mem=4gb \
   -v LOG=${LOG},BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS},FILTER_LEN=${FILTER_LEN} \
   ${WD}/code/indel.pbs | cut -d'.' -f1)
-  # qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS} ${WD}/code/indel.pbs
   echo "INDEL_PID is ${INDEL_PID}"
+  
+  # Left here to test singular .pbs scripts, may have to check for typos
+  # qsub -o ${OD} -l select=${THREADS}:ncpus=1:mem=4gb -v BAM=${BAM},WD=${WD},OD=${OD},NAME=${NAME},THREADS=${THREADS},FILTER_LEN=${FILTER_LEN} ${WD}/code/indel.pbs
 
   echo "===========================================================" 
 
@@ -243,7 +196,7 @@ for FILTER_LEN in "${FILTERS[@]}"; do
     INDEL=$( echo ${ASSUMPTIONS} | cut -d',' -f2 | cut -d'=' -f2 )
     R_CLIPPING=$( echo ${ASSUMPTIONS} | cut -d',' -f3 | cut -d'=' -f2 )
 
-    # specifying more than one is broken in qsub
+    # specifying more than one process is broken in qsub -W depend=afterok
     JOB_ID=$(qsub \
     -o ${OD} \
     -W depend=afterok:${INDEL_PID} \
@@ -253,8 +206,9 @@ for FILTER_LEN in "${FILTERS[@]}"; do
     # JOB_IDS=${JOB_IDS}:${JOB_ID}
   done < ${WD}/assumptions.txt
 
+  # Left here to test singular .pbs scripts, may have to check for typos
   # qsub -o ${OD} -v WD=${WD},OD=${OD},NAME=${NAME},METHOD=${METHOD},INDEL=${INDEL},R_CLIPPING=${R_CLIPPING},FILTER_LEN=${FILTER_LEN} \
-    # ${WD}/run.pbs
+  # ${WD}/run.pbs
 
   } | tee -a ${LOG}
 
@@ -266,10 +220,10 @@ echo "[Delete and tidy files]"
 
 JOB_ID=$( qstat -u ${USER} | tail -n1 | cut -d'.' -f1)
 
-qsub -o ${OD} \
--W depend=afterok:${JOB_ID} \
--v OD=${OD},NAME=${NAME},LOG=${LOG},START=${START} \
-${WD}/code/tidy.pbs
+# qsub -o ${OD} \
+# -W depend=afterok:${JOB_ID} \
+# -v OD=${OD},NAME=${NAME},LOG=${LOG},START=${START} \
+# ${WD}/code/tidy.pbs
 
 echo "===========================================================" 
 echo [$(date)] "ALL JOBS LAUNCHED for: ${NAME}" 

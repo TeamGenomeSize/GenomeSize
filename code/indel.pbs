@@ -8,11 +8,12 @@ START_TIME=$( date +"%T" )					# records time taken by whole pipeline
 START=$( date -u -d "${START_TIME}" +"%s" )
 JOB_ID=$( echo ${PBS_JOBID} | cut -d'.' -f1 )
 
-echo "[Executing ${JOB_ID} indel.pbs]"  >> ${LOG}
+echo "[Executing ${JOB_ID} indel.pbs for ${NAME},${FILTER_LEN} ]"  >> ${LOG}
 
 
 module load samtools/1.10
 
+# If indel_bias.txt does not exist
 if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt ]]; then
     
   if [[ -s ${OD}/${NAME}_${FILTER_LEN}.cigar ]]; then
@@ -22,11 +23,7 @@ if [[ ! -s ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt ]]; then
       python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.cigar
   fi
   
-  python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.sam > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
-
-  rm ${OD}/${NAME}_${FILTER_LEN}.cigar
-  rm ${OD}/${NAME}_${FILTER_LEN}.bam
-  rm ${OD}/${NAME}_${FILTER_LEN}.bam.bai
+  python3 ${WD}/code/indel_bias.py ${OD}/${NAME}_${FILTER_LEN}.cigar > ${OD}/${NAME}_${FILTER_LEN}_indel_bias.txt
 
 fi
 
@@ -35,6 +32,6 @@ FINAL_TIME=$( date +"%T" )
 FINAL=$(date -u -d "${FINAL_TIME}" +"%s")
 
 echo "$( date -u -d "0 ${FINAL} sec - ${START} sec" +"%H:%M:%S" ) elapsed" >> ${LOG}
-echo "[Finished executing ${JOB_ID} indel.pbs]"  >> ${LOG}
+echo "[Finished executing ${JOB_ID} indel.pbs for ${NAME},${FILTER_LEN} ]"  >> ${LOG}
 echo "===========================================================" >> ${LOG}
 

@@ -186,10 +186,13 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 ===========================================================
 ```
 - You may check corresponding qsub logs for errors if something has suspected to go wrong
+- The most likely error to come up is that the process has hit it's memory or time limit on a HPC
+    - Simply add more threads or add more memory/wall time to the problem .pbs
 ```
-$ cat 859572.kman.restech.unsw.edu.au.OU
-[bam_sort_core] merging from 72 files and 8 in-memory blocks...
-[mpileup] 1 samples in 1 input files
+$ cat 859484.kman.restech.unsw.edu.au.OU
+/var/spool/pbs/mom_priv/jobs/859484.kman.restech.unsw.edu.au.SC: line 64: 16514 Killed 
+# RAN OUT OF MEM
+samtools sort -@ ${THREADS} -o ${OD}/${NAME}_${FILTER_LEN}.sort.bam ${OD}/${NAME}_${FILTER_LEN}.bam  
 ```
 
 # Assumptions

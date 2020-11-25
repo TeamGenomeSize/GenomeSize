@@ -68,7 +68,7 @@ def getDepth(method: str, depths: list, all_depths:list, filter_len: str, od: st
         
         # then write depth to file for other processes to read
         with open(output, 'w') as f:
-            f.write(str(depth) + "\n")
+            f.write(str(int(depth)) + "\n")
 
     return depth
 

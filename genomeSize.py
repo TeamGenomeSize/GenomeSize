@@ -10,10 +10,6 @@ from pathlib import Path
 import argparse
 from code.getDepth import readPileup, getDepth
 
-############
-# run with:
-# python3 genomeSize.py -od ${OD} -n ${NAME} -p ${PILEUP} -v ${VOLUME} -m ${METHOD} -i ${INDEL} -rc ${R_CLIPPING} -fl ${FILTER_LEN} -pid $$
-
 #############
 # VARIABLES #
 #############
