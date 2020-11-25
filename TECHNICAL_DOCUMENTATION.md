@@ -9,7 +9,7 @@ git clone https://github.com/TeamGenomeSize/GenomeSize
 ### Prerequisites
  
 - [UNSW Katana - Linux supercomputer](https://unsw-restech.github.io/index.html)
-- [Python3](https://www.python.org/downloads/)
+- [Python3](https://www.python.org/downloads/), must be python3.8 or higher for statistics.mode(data) to have correct behaviour with multimodal read depth
 - [Samtools](http://www.htslib.org/)
  
 # Pipeline Components
