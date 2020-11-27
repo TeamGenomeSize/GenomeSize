@@ -10,9 +10,9 @@ echo "[Executing ${JOB_ID} tidy.pbs]"
 # neccesary if needing to share permissions with users within your group to access results
 chmod -R 775 ${OD}/
 
-rm ${OD}/${NAME}_${FILTER_LEN}.cigar
-rm ${OD}/${NAME}_${FILTER_LEN}.bam
-rm ${OD}/${NAME}_${FILTER_LEN}.bam.bai
+rm ${OD}/${NAME}_*.cigar
+rm ${OD}/${NAME}_*.bam
+rm ${OD}/${NAME}_*.bam.bai
 
 FINAL_TIME=$( date +"%T" )
 FINAL=$(date -u -d "${FINAL_TIME}" +"%s")

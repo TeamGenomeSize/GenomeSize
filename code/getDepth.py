@@ -131,12 +131,14 @@ def mode(array):
     most = max(list(map(array.count, array)))
     return list(set(filter(lambda x: array.count(x) == most, array)))
 
-# mode in a given SCO and then the mode of modes
+# mode in a given SCO and then the mode of these modes
 def modeOfModes(depths):
     modes = []
     for d in depths:
-        modes += mode(d)
-    return max(mode(modes))
+    #     modes += mode(d)
+    # return max(mode(modes))
+        modes.append(min(statistics.multimode(d)))
+    return min(statistics.multimode(modes))
 
 # median of medians
 # used for comparison with mode of modes
