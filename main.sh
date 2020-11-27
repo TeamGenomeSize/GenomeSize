@@ -9,42 +9,42 @@
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 
 # NAME=e_coli
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_7
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/e_coli_8
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/bam/e_coli.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/e_coli/busco3/run_e_coli/full_table_e_coli.tsv
 # WD=/home/$USER/GenomeSize
 # THREADS=2
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=s_cerevisiae
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae_1
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/s_cerevisiae_3
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/bam/s_cerevisiae.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/s_cerevisiae/busco3/run_s_cerevisiae/full_table_s_cerevisiae.tsv
 # WD=/home/$USER/GenomeSize
 # THREADS=4
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=c_elegans
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans_2
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/c_elegans_3
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/bam/c_elegans.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/c_elegans/busco3/run_c_elegans/full_table_c_elegans.tsv
 # WD=/home/$USER/GenomeSize
 # THREADS=8
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=m_musculus
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus_2
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/m_musculus_4
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/bam/m_musculus.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/m_musculus/busco3/run_m_musculus/full_table_m_musculus.tsv
 # WD=/home/$USER/GenomeSize
-# THREADS=8
+# THREADS=9
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=d_melanogaster
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster_1
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/d_melanogaster_3
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/bam/d_melanogaster.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/d_melanogaster/busco3/run_d_melanogaster/full_table_d_melanogaster.tsv
 # WD=/home/$USER/GenomeSize
 # THREADS=8
 # mkdir -p ${OD}; ./main.sh -od ${OD} -nm ${NAME} -wd ${WD} -b ${BAM} -sco ${SCO} -t ${THREADS}
 # NAME=a_thaliana
-# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana_1
+# OD=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/output/a_thaliana_3
 # BAM=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/bam/a_thaliana.bam
 # SCO=/srv/scratch/z3452659/BINF6112-Sep20/TeamGenomeSize/data/2020-09-22.ReferenceGenomes/a_thaliana/busco3/run_a_thaliana/full_table_a_thaliana.tsv
 # WD=/home/$USER/GenomeSize
@@ -220,10 +220,10 @@ echo "[Delete and tidy files]"
 
 JOB_ID=$( qstat -u ${USER} | tail -n1 | cut -d'.' -f1)
 
-# qsub -o ${OD} \
-# -W depend=afterok:${JOB_ID} \
-# -v OD=${OD},NAME=${NAME},LOG=${LOG},START=${START} \
-# ${WD}/code/tidy.pbs
+qsub -o ${OD} \
+-W depend=afterok:${JOB_ID} \
+-v OD=${OD},NAME=${NAME},LOG=${LOG},START=${START} \
+${WD}/code/tidy.pbs
 
 echo "===========================================================" 
 echo [$(date)] "ALL JOBS LAUNCHED for: ${NAME}" 
